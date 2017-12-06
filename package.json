@@ -1,0 +1,26 @@
+{
+  "name": "socket-example",
+  "version": "0.0.1",
+  "description": "an example of websockets taken from a book",
+  "main": "app/server.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4",
+    "socket.io-stream": "^0.9.1",
+    "vuejs": "^2.0.6",
+    "webpack": "^3.8.1"
+  },
+  "devDependencies": {
+    "rollup": "^0.51.8"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app/server.js",
+    "build": "webpack"
+  },
+  "keywords": [
+    "socket"
+  ],
+  "author": "frank m taylor + node.js in 24 hours",
+  "license": "ISC"
+}

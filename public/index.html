@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Socket experiment</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <link href="./base.css" rel="stylesheet" type="text/css" />
+        <style type="text/css">
+            .chat {
+                display: grid;
+                grid-template-rows: 12rem 12rem;
+                grid-template-columns: 12rem auto;
+                overflow: hidden;
+                font-size: .75em;
+            }
+
+            .chat__send {
+                grid-row-start:2;
+                grid-row-end:2;
+                grid-column-start: 2;
+                grid-column-end: 2;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .chat__users {
+                grid-row-start:1;
+                grid-row-end:2;
+                grid-column-start:1;
+                grid-column-end: 1;
+            }
+            .chat__user-field {
+                display: block;
+            }
+            .chat__text {
+                min-height: 4em;
+            }
+            .chat__receive {
+                grid-row-start:1;
+                grid-row-end: 1;
+                grid-column-start:2;
+                grid-column-end: 2;
+                overflow: scroll;
+            }
+
+            .stream {
+                display: grid;
+                grid-template-rows: 6rem 6rem;
+                grid-template-columns: 3rem 3rem calc(50vw - 7.5rem) 3rem calc(50vw - 7.5rem) 3rem 3rem;
+                width: 100%;
+                height: 12rem;
+            }
+            .stream__send-video {
+                grid-row-start:1;
+                grid-row-end: 1;
+                grid-column-start: 1;
+                grid-column-end: 1;
+            }
+
+            .stream__my-video {
+                grid-row-start: 1;
+                grid-row-end: 2;
+                grid-column-start: 3;
+                grid-column-end: 3;
+                height: 12rem;
+            }
+
+            .stream__their-video {
+                grid-row-start: 1;
+                grid-row-end: 2;
+                grid-column-start: 5;
+                grid-column-end: 6; 
+            }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <h1 class="">This is a socket experiment</h1>
+        <h2 class="js-socketMessage">{{message}}</h2>
+
+        <section class="chat">
+            <section class="chat__users users">
+                <h2 class="js-userCounter"></h2>
+                <ul class="js-userList users__list">
+                    <li v-for="user in users">{{user.username}}</li>
+                </ul>
+                <fieldset class="chat__user">
+                    <label class="chat__user-field">
+                        <span class="chat__user-label">Username:</span>
+                        <input class="js-username chat__user" />
+                    </label>
+                    <button class="chat__user-submit js-username-submit">Save user name</button>
+                    <div class="js-camerawrap">
+                        <div class="cameraouter" v-show="isTakingPic">Hey, now you can see me</div>
+                        <button class="js-take-pic">Snap a Pic!</button>     
+                    </sec>
+                    <output class="js-myPic"></output>
+                    </fieldset>
+                </section>
+            <div class="chat__send">
+                <textarea class="js-send-text chat__text"></textarea>
+                <button class="js-transmit chat__send-button">Send</button>
+            </div>
+            <output class="js-receive chat__receive">
+
+
+            </output>
+        </section>
+        <section class="stream">
+            <video class="js-myVideo stream__my-video" muted autoplay></video>
+
+            <img class="js-theirImage stream__their-video" />
+            <canvas class="js-theirCanvas"></canvas>
+            <video class="js-theirVideo"></video>
+            <button class="js-sendVideo stream__send-video">Stream Video</button>
+        </section>
+        <script type="text/javascript" src="./app.bundle.js">
+
+        </script>
+    </body>
+</html>

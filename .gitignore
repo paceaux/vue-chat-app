@@ -1,0 +1,4 @@
+*.cert
+*.csr
+*.key
+node_modules/*
