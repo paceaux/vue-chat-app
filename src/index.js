@@ -18,10 +18,16 @@ app.data = {
     codec: 'video/webm; codecs="vp8"'
 };
 
+app.state = {
+    messages: [],
+    users: [],
+    currentUser: {
+        name:''
+    }
+};
 app.elements = {
 
     socketMsg : document.querySelector('.js-socketMessage'),
-    socketCtrl : document.querySelector('.js-userCounter'),
     userList : document.querySelector('.js-userList'),
     chatUser : document.querySelector('.js-username'),
     chatUserSubmit : document.querySelector('.js-username-submit'),
@@ -136,8 +142,8 @@ app.components = {
             <video src={{stream}}>No Video Yet!</video>
             <button v-on:click="gum">Take Photo</button>
             </div>`,
-        data: {
-
+        data: function () {
+            return {};
         },
         methods: {
             gum: function () {
@@ -151,8 +157,42 @@ app.components = {
                     });
             }
         }
+    }),
+    chatMessage: Vue.component('chat-message', {
+        props: ['message', 'user'],
+        template: `
+            <blockquote class="chat__message">
+                <span class="chat__message-content"> {{message}} </span>
+                <cite class="chat__message-user">{{user}}</cite>
+            </blockquote>`,
+        data: function () {
+            return {
+            };
+        }
     })
 };
+
+
+const ChatSession = {
+    template: `<div class="chat__session">
+                    <template v-for="message in messages">
+                        <chat-message :message="message.content" :user="message.user"></chat-message>
+                    </template>
+                </div>`,
+    data: function () {
+        return {
+            messages: app.state.messages
+        };
+    }
+};
+
+
+new Vue({
+    el: '.js-receive',
+    components: {
+        'chat-session': ChatSession
+    }
+});
 
 app.bindUiEvents = function bindUiEvents() {
     app.elements.chatUserSubmit.addEventListener('click', app.uiCallbacks.userNameCb);
@@ -174,13 +214,11 @@ app.socketCbs = {
         console.log('welcomed', data);
         app.views.welcome.message = data.content;
     },
-    counter(data) {
-        console.info(data);
-        app.elements.socketCtrl.innerText = data.content;
-    },
+
     chatmsgsend(data) {
         console.info(data);
-        app.elements.chatReceive.innerHTML+=app.views.getChatView(data);
+        console.log(ChatSession);
+        app.state.messages.push(data);
     },
     chatusersend(data) {
         console.log('usersend', data);
