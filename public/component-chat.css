@@ -1,0 +1,67 @@
+.chat {
+    display: grid;
+    grid-template-rows: 16rem 6rem;
+    grid-template-columns: 12rem auto;
+    overflow: hidden;
+    font-size: .75em;
+}
+
+.chat__send {
+    grid-row-start: 2;
+    grid-row-end: 2;
+    grid-column-start: 2;
+    grid-column-end: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat__users {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    grid-column-start: 1;
+    grid-column-end: 1;
+
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 16rem 6rem;
+
+    background-color:  var(--mainBG)
+}
+
+.chat__user, .chat__send {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat__user {
+    justify-content: flex-start
+}
+
+.chat__send{
+    justify-content: flex-end;
+}
+
+.chat__user-field {
+    display: block;
+}
+
+.chat__user-name {
+    display: flex;
+    flex-direction: row;
+}
+
+.chat__user-name-submit {
+    margin-left: .25em;
+}
+
+.chat__text {
+    min-height: 4em;
+}
+
+.chat__receive {
+    grid-row-start: 1;
+    grid-row-end: 1;
+    grid-column-start: 2;
+    grid-column-end: 2;
+    overflow: scroll;
+}

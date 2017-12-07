@@ -307,6 +307,13 @@ app.data = {
     codec: 'video/webm; codecs="vp8"'
 };
 
+app.state = {
+    messages: [],
+    users: [],
+    currentUser: {
+        name:''
+    }
+};
 app.elements = {
 
     socketMsg : document.querySelector('.js-socketMessage'),
@@ -425,8 +432,8 @@ app.components = {
             <video src={{stream}}>No Video Yet!</video>
             <button v-on:click="gum">Take Photo</button>
             </div>`,
-        data: {
-
+        data: function () {
+            return {};
         },
         methods: {
             gum: function () {
@@ -440,8 +447,42 @@ app.components = {
                     });
             }
         }
+    }),
+    chatMessage: __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-message', {
+        props: ['message', 'user'],
+        template: `
+            <blockquote class="chat__message">
+                <span class="chat__message-content"> {{message}} </span>
+                <cite class="chat__message-user">{{user}}</cite>
+            </blockquote>`,
+        data: function () {
+            return {
+            };
+        }
     })
 };
+
+
+const ChatSession = {
+    template: `<div class="chat__session">
+                    <template v-for="message in messages">
+                        <chat-message :message="message.content" :user="message.user"></chat-message>
+                    </template>
+                </div>`,
+    data: function () {
+        return {
+            messages: app.state.messages
+        };
+    }
+};
+
+
+new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
+    el: '.js-receive',
+    components: {
+        'chat-session': ChatSession
+    }
+});
 
 app.bindUiEvents = function bindUiEvents() {
     app.elements.chatUserSubmit.addEventListener('click', app.uiCallbacks.userNameCb);
@@ -469,7 +510,8 @@ app.socketCbs = {
     },
     chatmsgsend(data) {
         console.info(data);
-        app.elements.chatReceive.innerHTML+=app.views.getChatView(data);
+        console.log(ChatSession);
+        app.state.messages.push(data);
     },
     chatusersend(data) {
         console.log('usersend', data);
