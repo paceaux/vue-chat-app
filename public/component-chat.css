@@ -28,40 +28,36 @@
     background-color:  var(--mainBG)
 }
 
-.chat__user, .chat__send {
-    display: flex;
-    flex-direction: column;
-}
-
-.chat__user {
-    justify-content: flex-start
-}
-
-.chat__send{
-    justify-content: flex-end;
-}
-
-.chat__user-field {
-    display: block;
-}
-
-.chat__user-name {
-    display: flex;
-    flex-direction: row;
-}
-
-.chat__user-name-submit {
-    margin-left: .25em;
-}
-
-.chat__text {
-    min-height: 4em;
-}
-
-.chat__receive {
+.chat__session {
     grid-row-start: 1;
-    grid-row-end: 1;
-    grid-column-start: 2;
-    grid-column-end: 2;
-    overflow: scroll;
+    grid-row-end: 3;
+    grid-column-start:2;
+    grid-column-end: 3;
+    display: grid;
+    grid-template-rows: 1fr 6rem;
+    grid-template-columns: 100%;
 }
+
+.chat__session-messages {
+    grid-row-start:1;
+    grid-row-end:1;
+}
+
+.chat__session-messageField {
+    grid-row-start:2;
+    grid-row-end: 3;
+    display: flex;
+    background-color: var(--mainBG);
+}
+
+.chat__session-message {
+    flex-grow:1;
+    height: 100%;
+}
+
+.chat__session-messageSend {
+    flex-basis: 4rem;
+}
+
+
+

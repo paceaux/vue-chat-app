@@ -88,7 +88,7 @@ Vue.component('chat-session', {
                 </chat-message>
             </output>
             <fieldset class="chat__session-messageField">
-                <textarea class="chat__session-message" v-model="currentMessage">
+                <textarea class="chat__session-message" v-model="currentMessage" v-on:keyup="readMessage">
 
                 </textarea>
                 <button class="chat__session-messageSend" v-on:click="sendMessage">Send</button>
@@ -108,6 +108,11 @@ Vue.component('chat-session', {
 
             console.log('sending Message', message);
             socket.emit('chatSessionMsgSend', message);
+        },
+        readMessage: function (evt) {
+            if (evt.which == 13) {
+                this.sendMessage();
+            }
         }
     }
 
