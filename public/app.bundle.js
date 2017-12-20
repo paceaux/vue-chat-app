@@ -287,20 +287,15 @@ module.exports = g;
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__user_js__ = __webpack_require__(7);
 __webpack_require__(3);
+
 
 const socket = io.connect();
 const app = {};
 
 app.init = function init() {
-    this.bindUiEvents();
-    this.bindSocketEvents();
 
-    window.addEventListener('load', ()=> {
-        if (app.helpers.recallUser()) {
-            app.elements.chatUser.value = app.helpers.recallUser();
-        } 
-    });
 };
 
 app.data = {
@@ -309,437 +304,60 @@ app.data = {
 
 app.state = {
     messages: [],
-    users: [],
-    currentUser: {
-        name:''
-    }
-};
-app.elements = {
-
-    socketMsg : document.querySelector('.js-socketMessage'),
-    socketCtrl : document.querySelector('.js-userCounter'),
-    userList : document.querySelector('.js-userList'),
-    chatUser : document.querySelector('.js-username'),
-    chatUserSubmit : document.querySelector('.js-username-submit'),
-    chatText : document.querySelector('.js-send-text'),
-    chatSend : document.querySelector('.js-transmit'),
-    chatReceive : document.querySelector('.js-receive'),
-    videoSendButton : document.querySelector('.js-sendVideo'),
-    selfVideo : document.querySelector('.js-myVideo'),
-    theirVideo : document.querySelector('.js-theirVideo'),
-    theirImage : document.querySelector('.js-theirImage'),
-    theirCanvas : document.querySelector('.js-theirCanvas'),
-    takePic: document.querySelector('.js-take-pic'),
-    myPic: document.querySelector('.js-myPic')
+    users: [new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */]('taco'), new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */]('paco')],
+    currentUser: JSON.parse(localStorage.getItem('app-currentUser')) || {username: ''}
 };
 
-app.uiCallbacks = {
-    userNameCb() {
-        const username = app.helpers.getText(app.elements.chatUser);
-        const currentUser = app.helpers.recallUser();
-    
-        if (username != app.helpers.recallUser()) {
-            socket.emit('chatuserdelete', {username:currentUser});
-        }
+__WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-user-item', {
+    props: ['username'],
+    template: `
+        <li class="userList__item>{{username}}</li>
+    `,
+});
 
-        app.helpers.saveUser(username);
-        socket.emit('chatusersend', {username});
-    },
-    chatSendCB() {
-        const content = app.helpers.getText(app.elements.chatText);
-        const user = app.helpers.getText(app.elements.chatUser);
-    
-        app.helpers.clearText(app.elements.chatText);
-        app.transmit.chatMessage({content,user});
-    },
-    startVideoStream() {
-        navigator.getUserMedia({video:true}, app.gumCallbacks.videoSuccess ,(e)=> {
-            console.warn('streaming error', e);
-        });
-    }
-};
-
-
-app.helpers = {
-    getText (el) {
-        return el.value;
-    },
-    
-    clearText (el) {
-        el.value = '';
-    },
-
-    saveUser(userName) {
-        userName && localStorage.setItem('chat-user', userName);
-    },
-    
-    recallUser() {
-       return localStorage.getItem('chat-user');
-    }
-};
-
-app.views = {
-    welcome : new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
-        el: '.js-socketMessage',
-        data: {
-            message: ''
-        }
-    }),
-    usersVue: new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
-        el: '.js-userList',
-        data: {
-            users: []
-        }
-    }),
-    cameraWrap: new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
-        el: '.js-camerawrap',
-        data: {
-            isTakingPic: false
-        }
-    }),
-    getChatView(data) {
-        return `
-        <blockquote class="chat__message">
-            <span class="chat__message-content"> ${data.content} </span>
-            <cite class="chat__message-user">${data.user}</cite>
-        </blockquote>
-        
-        `;
-    },
-    getUserMediaView(h, w, data) {
-    
-        return `
-    
-        `;
-    },
-    
-    getUserStreamView(data) {
-        const userMediaView = this.getUserMediaView(data.h, data.w, data.src);
-        return `
-            <figure class="stream">
-                ${userMediaView}
-                <figcaption class="stream__info">
-                    <p class="stream__user-name">User: <span class="">${data.user}</span></p>
-                </figcaption>
-            </figure>
-        `;
-    }
-};
-
-app.components = {
-    camera: __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('camera', {
-        template: `<div class="camera">
-            <video src={{stream}}>No Video Yet!</video>
-            <button v-on:click="gum">Take Photo</button>
-            </div>`,
-        data: function () {
-            return {};
-        },
-        methods: {
-            gum: function () {
-                navigator.getUserMedia({video:true, audio:false})
-                    .then((stream)=> {
-                        this.stream = stream;
-                        this.$emit('gotstream');
-                    })
-                    .catch((err)=> {
-
-                    });
-            }
-        }
-    }),
-    chatMessage: __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-message', {
-        props: ['message', 'user'],
-        template: `
-            <blockquote class="chat__message">
-                <span class="chat__message-content"> {{message}} </span>
-                <cite class="chat__message-user">{{user}}</cite>
-            </blockquote>`,
-        data: function () {
-            return {
-            };
-        }
-    })
-};
-
-
-const ChatSession = {
-    template: `<div class="chat__session">
-                    <template v-for="message in messages">
-                        <chat-message :message="message.content" :user="message.user"></chat-message>
-                    </template>
-                </div>`,
+__WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-users', {
+    template: `
+        <section class="chat__users">
+            <fieldset class="chat__users-current">
+                <fieldset class="chat__users-userField">
+                    <label for="currentUser" class="chat__users-userField-label"> Your Username
+                    <input id="currentUser" type="text" v-model="currentUser.username" />
+                    </label>
+                    <button class="chat__users-userField-submit" v-on:click="addUser">Submit</button>
+                </fieldset>
+            </fieldset>
+            <ul class="chat__users-list userList">
+                <li v-for="user in users">{{user.username}}</li>
+            </ul>
+        </section>
+    `,
     data: function () {
         return {
-            messages: app.state.messages
+            users: app.state.users,
+            currentUser: app.state.currentUser
         };
-    }
-};
+    },
+    methods: {
+        addUser: function () {
+            const username = this.currentUser.username;
+            const newUser = new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */](username);
+            
+            app.state.users.push(newUser);
+            app.state.currentUser = newUser;
 
+            this.saveUser(newUser);
 
-new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
-    el: '.js-receive',
-    components: {
-        'chat-session': ChatSession
+        },
+        saveUser: function (user) {
+            localStorage.setItem('app-currentUser', JSON.stringify(user));
+        }
     }
 });
 
-app.bindUiEvents = function bindUiEvents() {
-    app.elements.chatUserSubmit.addEventListener('click', app.uiCallbacks.userNameCb);
-    app.elements.chatSend.addEventListener('click', app.uiCallbacks.chatSendCB);
-    app.elements.chatText.addEventListener('keyup', (evt)=> {
-        if (evt.which == 13) {
-            app.uiCallbacks.chatSendCB();
-        }
-    });
-    app.elements.videoSendButton.addEventListener('click', app.uiCallbacks.startVideoStream);
-    app.elements.takePic.addEventListener('click', ()=> {
-        app.views.cameraWrap.isTakingPic = true;
 
-    });
-};
-
-app.socketCbs = {
-    welcome(data) {
-        console.log('welcomed', data);
-        app.views.welcome.message = data.content;
-    },
-    counter(data) {
-        console.info(data);
-        app.elements.socketCtrl.innerText = data.content;
-    },
-    chatmsgsend(data) {
-        console.info(data);
-        console.log(ChatSession);
-        app.state.messages.push(data);
-    },
-    chatusersend(data) {
-        console.log('usersend', data);
-        app.views.usersVue.users = data;
-    },
-    canvasToImage(data) {
-        app.elements.theirImage.src = data.src;
-        app.elements.theirImage.style.height = data.height;
-        app.elements.theirImage.style.width = data.width;
-    },
-    canvasToCanvas(data) {
-        const img = app.gum.canvasImage;
-        const cvs = app.elements.theirCanvas;
-        const ctx = cvs.getContext('2d');
-
-        cvs.width = data.width;
-        cvs.height = data.height;
-
-        img.onload = function() {
-            ctx.drawImage(img, 0, 0);
-        };
-
-
-
-        img.src = data.src;
-    },
-    cancelVideo(data) {
-
-    },
-    test(data) {
-
-    }
-};
-
-app.gum = {
-    get canvasImage() {
-        let img;
-        if (this._theirImage) {
-            img = this._theirImage;
-        } else {
-            img = new Image();
-        }
-        
-        return img;
-    },
-
-    get mediaSource() {
-        let ms;
-        if (this._ms) {
-            ms = this._ms;
-        } else {
-            ms = new MediaSource();
-        }
-        
-        return ms;
-    },
-    drawOnCanvas(video, canvas) {
-        console.log('draw on BackCanvas');
-        const backContext = canvas.getContext('2d');
-        const cw = video.clientWidth;
-        const ch = video.clientHeight;
-        let toggle = false;
-    
-        canvas.width = cw;
-        canvas.height = ch;
-        
-    
-        (function loop() {
-            toggle = !toggle;
-    
-            if (toggle) {
-                backContext.drawImage(video, 0, 0, cw, ch);
-                const stringData = canvas.toDataURL('image/webp')
-    
-                app.transmit.streamedVideo({width:cw, height: ch, src: stringData});
-            }
-    
-            requestAnimationFrame(loop);
-        })();
-    
-    },
-    sendCanvasifiedInfo(video) {
-        const canvas = document.createElement('canvas');
-        app.gum.drawOnCanvas(video, canvas);
-    }
-};
-
-app.gumCallbacks = {
-    videoSuccess (stream) {   
-        const streamURL = URL.createObjectURL(stream);
-        const selfVideo = app.elements.selfVideo;
-        const mediaSource = new MediaSource();
-        let duration = 0;
-        selfVideo.src = streamURL;
-//      app.gum.sendCanvasifiedInfo(selfVideo)
-
-
-        selfVideo.onloadedmetadata = function () {
-            const recorder = new MediaRecorder(stream);
-            let arrayBuffer;
-    
-            // start recording immediately
-            recorder.start();
-            recorder.requestData(); // request the data. this triggers the "dataavailable event"
-        
-    
-            recorder.addEventListener('start', (evt) => {
-                setInterval(()=> {
-                    recorder.requestData();
-                }, 2000);
-            });
-    
-            recorder.addEventListener('dataavailable', (evt) => {
-                const data = evt.data;
-                socket.emit('videoToVideo', data);
-            });
-        }
-
-    }
-};
-
-app.mediaSourceCbs = {
-    sourceopen(evt) {
-        console.log('sourceopen', evt);
-    },
-    sourceended(evt) {
-        console.log('sourceended', evt);
-    },
-    sourceclose(evt) {
-        console.log('sourceclose', evt);
-    },
-    error(evt) {
-        console.error('error', evt);
-    }
-};
-
-app.bufferCbs = {
-    updatestart(evt) {
-        // console.log('updatestart', evt);
-    },
-    update(evt) {
-        // console.log('update', evt);
-    },
-    updateend(evt) {
-        // console.log('updateend', evt);
-    },
-    error(evt) {
-        // console.error('error', evt);
-    },
-    abort(evt) {
-        // console.warn('abort', evt);
-    },
-};
-
-
-
-app.bindSocketEvents = function bindSocketEvents() {
-    for (let cbName in this.socketCbs) {
-        socket.on(cbName, this.socketCbs[cbName]);
-    }
-
-    const theirVideo = app.elements.theirVideo;
-    const supportsMediaSource = ('MediaSource' in window);
-    const isCodecSupported = MediaSource.isTypeSupported(app.data.codec);
-    const queue = [];
-
-    
-
-    if (supportsMediaSource && isCodecSupported) {
-        const mediaSource = app.gum.mediaSource;
-
-        socket.on('videoToVideo', ()=> {
-            if (!theirVideo.src) theirVideo.src = URL.createObjectURL(mediaSource);
-        });
-        for (let cbName in app.mediaSourceCbs) {
-            mediaSource.addEventListener(cbName, app.mediaSourceCbs[cbName]);
-        }
-
-        mediaSource.addEventListener('sourceopen', sourceOpen);
-
-    } else {
-        console.error('Codec not supported', app.data.codec);
-    }
-
-    function sourceOpen(evt) {
-        const mediaSource = evt.target;
-        const sourceBuffer = mediaSource.addSourceBuffer(app.data.codec);
-        theirVideo.play();
-
-        for (let cbName in app.bufferCbs) {
-            sourceBuffer.addEventListener(cbName, app.bufferCbs[cbName]);
-        }
-
-        sourceBuffer.addEventListener('buffer', () => {
-            if (queue.length > 0 && !sourceBuffer.updating) {
-                sourceBuffer.appendBuffer(queue.shift());
-            }
-        });
-
-        socket.on('videoToVideo', (data) => {
-            
-            if (sourceBuffer.updating || queue.length > 0) {
-                queue.push(data);
-            } else {
-                sourceBuffer.appendBuffer(data);
-            }
-        });
-
-    }
-
-
-
-    
-
-};
-
-app.transmit = {
-    chatMessage(data) {
-        socket.emit('chatmsgsend',data);
-    },
-    streamedVideo(data) {
-        socket.emit('videoToVideo', data);
-    }
-};
-
-app.init();
-
-
+new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
+    el: '.chat'
+});
 
 /***/ }),
 /* 3 */
@@ -11699,6 +11317,18 @@ exports.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(0)))
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (class {
+    constructor(name){
+        this.username = name;
+        this.timeCreated = Date.now();
+    }
+});
 
 /***/ })
 /******/ ]);

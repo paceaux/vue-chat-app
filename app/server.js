@@ -64,12 +64,12 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('counter', Messages.counter);
     });
 
-    socket.on('chatusersend', (data) => {
-        console.log(data);
+    socket.on('chatUserAdd', (data) => {
         if (data.username) users.addUser(data);
-        console.log(users.userList);
-        socket.emit('chatusersend', users.userList);
-        socket.broadcast.emit('chatusersend', users.userList);
+        console.log('chatUserAdd', data);
+        socket.emit('chatUserAdd', data);
+        socket.broadcast.emit('chatUserAdd', data);
+        socket.broadcast.emit('chatUserListUpdate', users.userList);
     });
 
     socket.on('chatuserdelete', (data) => {

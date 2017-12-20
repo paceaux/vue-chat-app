@@ -23,44 +23,17 @@
         <![endif]-->
     <header class="g-header">
             <h1 class="">This is a socket experiment</h1>
-            <h2 class="js-socketMessage">{{message}}</h2>
     </header>
     <section class="chat">
-        <section class="chat__users users">
-            <ul class="js-userList users__list">
-                <li v-for="user in users">{{user.username}}</li>
-            </ul>
-            <fieldset class="chat__user">
-                <fieldset class="chat__user-name">
-                    <label class="chat__user-field">
-                        <span class="chat__user-label">Username:</span>
-                        <input class="js-username chat__user" />
-                    </label>
-                    <button class="chat__user-name-submit js-username-submit">Save user name</button>
-                </fieldset>
-                <div class="js-camerawrap">
-                    <div class="cameraouter" v-show="isTakingPic">Hey, now you can see me</div>
-                    <button class="js-take-pic">Snap a Pic!</button>
-                    <output class="js-myPic"></output>
-                </div>
-            </fieldset>
-        </section>
-        <div class="chat__send">
-            <textarea class="js-send-text chat__text"></textarea>
-            <button class="js-transmit chat__send-button">Send</button>
-        </div>
-        <output class="js-receive chat__receive">
-            <chat-session></chat-session>
+        <chat-users></chat-users>
+        
 
-        </output>
+
+
+
     </section>
     <section class="stream">
-        <video class="js-myVideo stream__my-video" muted autoplay></video>
 
-        <img class="js-theirImage stream__their-video" />
-        <canvas class="js-theirCanvas"></canvas>
-        <video class="js-theirVideo"></video>
-        <button class="js-sendVideo stream__send-video">Stream Video</button>
     </section>
     <script type="text/javascript" src="./app.bundle.js">
     </script>

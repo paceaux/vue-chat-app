@@ -23,7 +23,7 @@
 
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: 16rem 6rem;
+    grid-template-rows: 6rem 1fr;
 
     background-color:  var(--mainBG)
 }
