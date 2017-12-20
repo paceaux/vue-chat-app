@@ -21,6 +21,11 @@ const publicPath = path.resolve(__dirname,public);
 const port = process.env.PORT || 443;
 const host = '127.0.0.1';
 
+const state = {
+    users: [],
+    messages: []
+};
+
 server.listen(port);
 
 app.use(express.static(publicPath));
@@ -28,27 +33,17 @@ app.get('/', (req, res) => {
     res.sendFile('index.html', {root: publicPath});
 });
 
+
+
 io.on('connection', (socket) => {
    const socketEvents = {
         chatSessionMsgSend(data) {
             socket.emit('chatSessionMsgSend', data);
+            console.log('got message', data);
+            state.messages.push(data);
             socket.broadcast.emit('chatSessionMsgSend', data);
         },
-        canvasToImage(data) {
-            socket.broadcast.emit('canvasToImage', data);        
-        },
-        canvasToCanvas(data){
-            socket.broadcast.emit('canvasToCanvas', data);        
-        },
-        cancelVideo(data){
-            socket.broadcast.emit('cancelVideo', data);        
-        },
-        videoToVideo(data){
-            socket.broadcast.emit('videoToVideo', data);        
-        },
-        test(data){
-            socket.broadcast.emit('test', data);        
-        }
+
     };
     socket.emit('welcome', Messages.welcome);
     socket.emit('chatusersend', users.userList);
@@ -58,23 +53,7 @@ io.on('connection', (socket) => {
         socket.on(eventName, socketEvents[eventName]);
     }
 
-    socket.on('disconnect', () => {
-        Messages.counter.count--;
 
-        socket.broadcast.emit('counter', Messages.counter);
-    });
-
-    socket.on('chatUserAdd', (data) => {
-        if (data.username) users.addUser(data);
-        console.log('chatUserAdd', data);
-        socket.emit('chatUserAdd', data);
-        socket.broadcast.emit('chatUserAdd', data);
-        socket.broadcast.emit('chatUserListUpdate', users.userList);
-    });
-
-    socket.on('chatuserdelete', (data) => {
-        users.delUser(data);
-    });
 
 
 });

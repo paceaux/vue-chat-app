@@ -288,14 +288,16 @@ module.exports = g;
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__user_js__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__message_js__ = __webpack_require__(8);
 __webpack_require__(3);
+
 
 
 const socket = io.connect();
 const app = {};
 
 app.init = function init() {
-
+    app.bindSocketEvents();
 };
 
 app.data = {
@@ -354,10 +356,27 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-users', {
     }
 });
 
+__WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-message', {
+    template: `
+    <blockquote class="chatMessage">
+        <p>{{message.content}}</p>
+    <cite class="chatMessage__user">{{message.user.username}}</cite>
+    </blockquote>
+    `,
+    props: ['message']
+
+});
+
 __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-session', {
     template: `
         <section class="chat__session">
             <output class="chat__session-messages">
+                <chat-message v-for="(message,index) in messages"
+                v-bind:message="message"
+                v-bind:index="index"
+                v-bind:key="message.timeCreated"
+                >
+                </chat-message>
             </output>
             <fieldset class="chat__session-messageField">
                 <textarea class="chat__session-message" v-model="currentMessage">
@@ -376,17 +395,35 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-session', {
     methods: {
         sendMessage: function () {
             const textMsg = this.currentMessage;
-            const message = {user: app.state.currentUser, message: textMsg};
+            const message = new __WEBPACK_IMPORTED_MODULE_2__message_js__["a" /* default */](textMsg, app.state.currentUser);
 
-            socket.broadcast.emit('chatSessionMsgSend', message);
+            console.log('sending Message', message);
+            socket.emit('chatSessionMsgSend', message);
         }
     }
+
 });
 
 
 new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
     el: '.chat'
 });
+
+app.socketCallbacks = {
+    chatSessionMsgSend(message) {
+        console.log('receiving message: ', message);
+        app.state.messages.push(message);
+    }
+};
+
+app.bindSocketEvents = function () {
+    console.log('bind socket evts');
+    for (let eventName in app.socketCallbacks) {
+        socket.on(eventName, app.socketCallbacks[eventName]);
+    }
+};
+
+app.init();
 
 /***/ }),
 /* 3 */
@@ -11357,6 +11394,21 @@ exports.clearImmediate = clearImmediate;
         this.username = name;
         this.timeCreated = Date.now();
     }
+});
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (class {
+    constructor(content, user) {
+        this.user = user;
+        this.content = content;
+        this.timeCreated = Date.now();
+    }
+
+
 });
 
 /***/ })

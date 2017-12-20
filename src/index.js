@@ -1,11 +1,12 @@
 require('./polyfills.js');
 import Vue from 'vue'
 import User from './user.js';
+import Message from './message.js';
 const socket = io.connect();
 const app = {};
 
 app.init = function init() {
-
+    app.bindSocketEvents();
 };
 
 app.data = {
@@ -64,10 +65,27 @@ Vue.component('chat-users', {
     }
 });
 
+Vue.component('chat-message', {
+    template: `
+    <blockquote class="chatMessage">
+        <p>{{message.content}}</p>
+    <cite class="chatMessage__user">{{message.user.username}}</cite>
+    </blockquote>
+    `,
+    props: ['message']
+
+});
+
 Vue.component('chat-session', {
     template: `
         <section class="chat__session">
             <output class="chat__session-messages">
+                <chat-message v-for="(message,index) in messages"
+                v-bind:message="message"
+                v-bind:index="index"
+                v-bind:key="message.timeCreated"
+                >
+                </chat-message>
             </output>
             <fieldset class="chat__session-messageField">
                 <textarea class="chat__session-message" v-model="currentMessage">
@@ -86,14 +104,30 @@ Vue.component('chat-session', {
     methods: {
         sendMessage: function () {
             const textMsg = this.currentMessage;
-            const message = {user: app.state.currentUser, message: textMsg};
+            const message = new Message(textMsg, app.state.currentUser);
 
-            socket.broadcast.emit('chatSessionMsgSend', message);
+            console.log('sending Message', message);
+            socket.emit('chatSessionMsgSend', message);
         }
     }
+
 });
 
 
 new Vue({
     el: '.chat'
 });
+
+app.socketCallbacks = {
+    chatSessionMsgSend(message) {
+        app.state.messages.push(message);
+    }
+};
+
+app.bindSocketEvents = function () {
+    for (let eventName in app.socketCallbacks) {
+        socket.on(eventName, app.socketCallbacks[eventName]);
+    }
+};
+
+app.init();
