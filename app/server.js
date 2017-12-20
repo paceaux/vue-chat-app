@@ -30,9 +30,9 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
    const socketEvents = {
-        chatmsgsend(data) {
-            socket.emit('chatmsgsend', data);
-            socket.broadcast.emit('chatmsgsend', data);
+        chatSessionMsgSend(data) {
+            socket.emit('chatSessionMsgSend', data);
+            socket.broadcast.emit('chatSessionMsgSend', data);
         },
         canvasToImage(data) {
             socket.broadcast.emit('canvasToImage', data);        

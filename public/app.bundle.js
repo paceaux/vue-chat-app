@@ -354,6 +354,35 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-users', {
     }
 });
 
+__WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-session', {
+    template: `
+        <section class="chat__session">
+            <output class="chat__session-messages">
+            </output>
+            <fieldset class="chat__session-messageField">
+                <textarea class="chat__session-message" v-model="currentMessage">
+
+                </textarea>
+                <button class="chat__session-messageSend" v-on:click="sendMessage">Send</button>
+            </fieldset>
+        </section>
+    `,
+    data: function () {
+        return {
+            messages: app.state.messages,
+            currentMessage: ''
+        };
+    },
+    methods: {
+        sendMessage: function () {
+            const textMsg = this.currentMessage;
+            const message = {user: app.state.currentUser, message: textMsg};
+
+            socket.broadcast.emit('chatSessionMsgSend', message);
+        }
+    }
+});
+
 
 new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
     el: '.chat'
