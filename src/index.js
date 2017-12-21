@@ -213,7 +213,6 @@ Vue.component('chat-session', {
             const message = new Message(textMsg, store.state.currentUser);
 
             socket.emit('chatSessionMsgSend', message);
-            store.currentUser.addMessage(message);
             this.currentMessage = '';
         },
         readMessage: function (evt) {
@@ -249,6 +248,12 @@ app.socketCallbacks = {
             serverState.users.forEach(element => {
                 store.addUser(element);
             });
+        }
+
+        if (serverState.messages.length != store.state.messages) {
+            serverState.messages.forEach(element => {
+                store.addMessage(element);
+            })
         }
 
         chatApp.$forceUpdate();
