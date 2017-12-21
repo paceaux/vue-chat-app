@@ -60,18 +60,22 @@ Vue.component('user-take-pic',  {
         <fieldset class="chat__users-userPic userPic">
             
             <button class="userPic__start" v-on:click="startVideo">Add Your Photo</button>
-            <output class="userPic__camera" v-if="isStreaming" >
-                <video class="userPic__video" v-on:play="videoPlay" autoplay>
-                    <source v-if="isStreaming" :src="videoSrc" :type="type">
-                </video>
-                <canvas class="userPic__canvas" :width="videoWidth" :height="videoHeight"></canvas>
-                <button class="userPic__takePhoto" v-on:click="takePicture">Take Picture</button>
-            </output>
+            <div class="userPic__camera-container camera-container" v-if="isStreaming">
+                <div class="userPic__camera camera" >
+                    <video class="camera__video" v-on:play="videoPlay" autoplay>
+                        <source v-if="isStreaming" :src="videoSrc" :type="type">
+                    </video>
+                    <canvas class="camera__canvas" :width="videoWidth" :height="videoHeight"></canvas>
+                    <button class="camera__record" v-on:click="takePicture">Take Picture</button>
+                    <a href="#" class="camera__close" v-on:click="closeCamera">x</a>
+                </div>
+            </div>
         </fieldset>
     `,
     data: function () {
         return {
             isStreaming: false,
+            stream: '',
             videoSrc: '',
             type: 'video/mp4',
             videoWidth: 0,
@@ -85,6 +89,7 @@ Vue.component('user-take-pic',  {
             .then((stream) => {
                 this.isStreaming = true;
                 this.videoSrc = URL.createObjectURL(stream);
+                this.stream = stream;
             });
         },
         videoPlay: function (evt) {
@@ -114,6 +119,18 @@ Vue.component('user-take-pic',  {
             user.addPhoto(canvas.toDataURL('image/png'));
 
             app.store.addCurrentUser(user);
+        },
+        closeCamera: function (evt) {
+            evt.preventDefault();
+            const tracks = this.stream.getTracks();
+
+            this.isStreaming = false;
+            this.stream = '';
+
+            tracks.forEach(track => {
+                track.stop();
+            });
+
         }
     }
 });

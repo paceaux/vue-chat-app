@@ -487,3 +487,18 @@ html {
   thead tr:last-child td {
     border-top-width: 2px;
   }
+
+  button {
+    padding: 0 .618em;
+    border: 1px solid #333;
+    border-radius: 2px;
+    transition: all .3s ease-in-out;
+  }
+
+  button:hover,
+  button:focus,
+  button:active {
+    outline: none;
+    border-color: #999;
+  }
+

@@ -63,19 +63,68 @@
 }
 
 
-.userPic__camera {
+.userPic__camera-container {
     position: fixed;
-    top: 19.1vh;
-    bottom: 19.1vh;
-    left: 19.1vw;
-    right: 19.1vw;
+    top: 0;
+    bottom:0;
+    left: 0;
+    right: 0;
     z-index: 3;
-    padding: .618rem;
-    background: hsla(190, 60%, 67%, 0.3);
-
+    background: hsla(190, 60%, 97%, 0.9);
 }
 
-.userPic__video {
+.camera-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.userPic__camera {
+    position: relative;
+    padding: .618rem;
+    background: white;
+}
+
+.camera__close {
+    font-family: Helvetica, Arial, Helvetica, sans-serif;
+    font-size: 1.618;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: .618em;
+    background: rgb(240,240,240);
+    border-bottom: none;
+}
+.camera__close:hover, 
+.camera__close:focus,
+.camera__close:active {
+    border-bottom: none;
+    background: rgb(220,220,220);
+}
+
+.camera__record {
+    font-size: 1em;
+    line-height: 2;
+    background: rgb(245,245,245);
+}
+
+.camera__record:hover,
+.camera__record:focus,
+.camera__record:active {
+    background: rgb(220,220,220);
+}
+
+.camera__record::before {
+    content: '\2022';
+    display: inline-block;
+    color: red;
+    font-size: 1.618em;
+    line-height: 1;
+    margin-right: .5em;
+}
+
+.camera__video {
     display:inline-block;
     width: 45%;
 }
