@@ -6,6 +6,9 @@ const socket = io.connect();
 const app = {};
 
 app.init = function init() {
+    socket.on('connect', ()=>{
+        console.log('you connected');
+    });
     app.bindSocketEvents();
 };
 
@@ -87,17 +90,19 @@ Vue.component('chat-session', {
                 >
                 </chat-message>
             </output>
-            <fieldset class="chat__session-messageField">
+            <div class="chat__session-messageField">
                 <textarea class="chat__session-message" v-model="currentMessage" v-on:keyup="readMessage">
 
                 </textarea>
                 <button class="chat__session-messageSend" v-on:click="sendMessage">Send</button>
-            </fieldset>
+            </div>
         </section>
     `,
     data: function () {
         return {
-            messages: app.state.messages,
+            get messages() {
+                return app.state.messages;
+            },
             currentMessage: ''
         };
     },
@@ -108,12 +113,22 @@ Vue.component('chat-session', {
 
             console.log('sending Message', message);
             socket.emit('chatSessionMsgSend', message);
+
+            this.currentMessage = '';
         },
         readMessage: function (evt) {
             if (evt.which == 13) {
                 this.sendMessage();
             }
         }
+    },
+    watch: {
+        messages: function (newMessages) {
+            console.log("there's new messages!");
+        }
+    },
+    beforeMount () {
+        this.messages = app.state.messages;
     }
 
 });
@@ -126,6 +141,10 @@ new Vue({
 app.socketCallbacks = {
     chatSessionMsgSend(message) {
         app.state.messages.push(message);
+    },
+    chatSessionConnect(messages){
+        console.log('got chatSessionConnect', messages);
+        app.state.messages = messages;
     }
 };
 

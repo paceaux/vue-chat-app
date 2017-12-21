@@ -297,6 +297,9 @@ const socket = io.connect();
 const app = {};
 
 app.init = function init() {
+    socket.on('connect', ()=>{
+        console.log('you connected');
+    });
     app.bindSocketEvents();
 };
 
@@ -378,17 +381,19 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-session', {
                 >
                 </chat-message>
             </output>
-            <fieldset class="chat__session-messageField">
-                <textarea class="chat__session-message" v-model="currentMessage">
+            <div class="chat__session-messageField">
+                <textarea class="chat__session-message" v-model="currentMessage" v-on:keyup="readMessage">
 
                 </textarea>
                 <button class="chat__session-messageSend" v-on:click="sendMessage">Send</button>
-            </fieldset>
+            </div>
         </section>
     `,
     data: function () {
         return {
-            messages: app.state.messages,
+            get messages() {
+                return app.state.messages;
+            },
             currentMessage: ''
         };
     },
@@ -399,7 +404,22 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-session', {
 
             console.log('sending Message', message);
             socket.emit('chatSessionMsgSend', message);
+
+            this.currentMessage = '';
+        },
+        readMessage: function (evt) {
+            if (evt.which == 13) {
+                this.sendMessage();
+            }
         }
+    },
+    watch: {
+        messages: function (newMessages) {
+            console.log("there's new messages!");
+        }
+    },
+    beforeMount () {
+        this.messages = app.state.messages;
     }
 
 });
@@ -411,13 +431,15 @@ new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
 
 app.socketCallbacks = {
     chatSessionMsgSend(message) {
-        console.log('receiving message: ', message);
         app.state.messages.push(message);
+    },
+    chatSessionConnect(messages){
+        console.log('got chatSessionConnect', messages);
+        app.state.messages = messages;
     }
 };
 
 app.bindSocketEvents = function () {
-    console.log('bind socket evts');
     for (let eventName in app.socketCallbacks) {
         socket.on(eventName, app.socketCallbacks[eventName]);
     }

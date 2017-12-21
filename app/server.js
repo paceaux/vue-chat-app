@@ -35,15 +35,25 @@ app.get('/', (req, res) => {
 
 
 
+io.on('connect', (socket)=> {
+    if (state.messages.length > 0) {
+        console.group('connection occured');
+        console.log(state);
+        if (state.messages.length > 0) {
+            socket.emit('chatSessionConnect', state.messages);
+        }
+        console.groupEnd();
+    }
+});
+
 io.on('connection', (socket) => {
-   const socketEvents = {
+    const socketEvents = {
         chatSessionMsgSend(data) {
             socket.emit('chatSessionMsgSend', data);
-            console.log('got message', data);
             state.messages.push(data);
             socket.broadcast.emit('chatSessionMsgSend', data);
         },
-
+    
     };
     socket.emit('welcome', Messages.welcome);
     socket.emit('chatusersend', users.userList);
