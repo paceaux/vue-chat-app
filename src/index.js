@@ -142,7 +142,9 @@ Vue.component('chat-users', {
 Vue.component('chat-message', {
     template: `
     <blockquote class="chatMessage">
-        <p>{{message.content}}</p>
+        <div class="chatMessage__content">
+            <p>{{message.content}}</p>
+        </div>
         <div class="chatMessage__user chatUser">
             <img class="chatUser__img" v-if="message.user.photo" v-bind:src="message.user.photo" />
             <cite class="chatUser__name">{{message.user.username}}</cite>
