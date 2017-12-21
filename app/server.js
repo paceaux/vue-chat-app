@@ -53,15 +53,19 @@ io.on('connection', (socket) => {
             state.messages.push(data);
             socket.broadcast.emit('chatSessionMsgSend', data);
         },
-    
+        chatStateAddUser(user) {
+            if (state.users.indexOf(user) === -1) {
+                state.users.push(user);
+                socket.broadcast.emit('chatStateUserAdded', user);
+            }
+        }
     };
-    socket.emit('welcome', Messages.welcome);
-    socket.emit('chatusersend', users.userList);
-
 
     for (let eventName in socketEvents) {
         socket.on(eventName, socketEvents[eventName]);
     }
+
+
 
 
 

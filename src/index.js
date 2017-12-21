@@ -1,5 +1,5 @@
 require('./polyfills.js');
-import Vue from 'vue'
+import Vue from 'vue';
 import User from './user.js';
 import Message from './message.js';
 const socket = io.connect();
@@ -134,6 +134,7 @@ Vue.component('chat-users', {
 
         },
         saveUser: function (user) {
+            socket.emit('chatStateAddUser', user);
             localStorage.setItem('app-currentUser', JSON.stringify(user));
         }
     }
@@ -218,6 +219,9 @@ app.socketCallbacks = {
     chatSessionMsgSend(message) {
         app.state.messages.push(message);
     },
+    chatStateUserAdded(user) {
+        app.state.users.push(user);
+    }
     // chatSessionConnect(messages){
     //     console.log('got chatSessionConnect', messages);
     //     app.state.messages = messages;

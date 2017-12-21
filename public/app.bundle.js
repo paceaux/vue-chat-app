@@ -309,7 +309,7 @@ app.data = {
 
 app.state = {
     messages: [],
-    users: [new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */]('taco'), new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */]('paco')],
+    users: [],
     currentUser: JSON.parse(localStorage.getItem('app-currentUser')) || new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */]()
 };
 
@@ -425,6 +425,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-users', {
 
         },
         saveUser: function (user) {
+            socket.emit('chatStateAddUser', user);
             localStorage.setItem('app-currentUser', JSON.stringify(user));
         }
     }
@@ -509,6 +510,9 @@ app.socketCallbacks = {
     chatSessionMsgSend(message) {
         app.state.messages.push(message);
     },
+    chatStateUserAdded(user) {
+        app.state.users.push(user);
+    }
     // chatSessionConnect(messages){
     //     console.log('got chatSessionConnect', messages);
     //     app.state.messages = messages;
@@ -11491,6 +11495,10 @@ exports.clearImmediate = clearImmediate;
     constructor(name){
         this.username = name;
         this.timeCreated = Date.now();
+        this.messages = [];
+    }
+    addMessage(message) {
+        this.messages.push(message);
     }
 });
 
