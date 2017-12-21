@@ -206,7 +206,7 @@ Vue.component('chat-message', {
 Vue.component('chat-session', {
     template: `
         <section class="chat__session">
-            <output class="chat__session-messages">
+            <output class="chat__session-messages" v-if="messages.length > 0">
                 <chat-message v-for="(message,index) in messages"
                 v-bind:message="message"
                 v-bind:index="index"
@@ -214,6 +214,9 @@ Vue.component('chat-session', {
                 >
                 </chat-message>
             </output>
+            <article class="chat__session-info" v-if="messages.length === 0">
+                <p>No one has said anything</p>
+            </article>
             <div class="chat__session-messageField">
                 <textarea class="chat__session-message" v-model="currentMessage" v-on:keyup="readMessage">
 

@@ -47,6 +47,16 @@
     overflow-y: scroll;
 }
 
+.chat__session-info {
+    grid-row-start:1;
+    grid-row-end:1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 2em;
+}
+
 .chat__session-message {
     flex-grow: 1;
 }
