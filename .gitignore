@@ -2,3 +2,4 @@
 *.csr
 *.key
 node_modules/*
+public/*.js
