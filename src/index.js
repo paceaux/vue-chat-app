@@ -16,7 +16,7 @@ app.data = {
     codec: 'video/webm; codecs="vp8"'
 };
 
-const store = {
+app.store = {
     debug: true,
     state: {
         messages: [],
@@ -76,7 +76,7 @@ Vue.component('user-take-pic',  {
             type: 'video/mp4',
             videoWidth: 0,
             videoHeight: 0,
-            userPicture: store.state.currentUser.photo
+            userPicture: app.store.state.currentUser.photo
         };
     },
     methods: {
@@ -103,7 +103,7 @@ Vue.component('user-take-pic',  {
             const canvas = this.$el.querySelector('canvas');
             const context = canvas.getContext('2d');
             const video = this.$el.querySelector('video');
-            const user = store.state.currentUser;
+            const user = app.store.state.currentUser;
 
             if (video.offsetHeight != this.videoHeight) {
                 this.videoHeight = video.offsetHeight;
@@ -113,7 +113,7 @@ Vue.component('user-take-pic',  {
 
             user.addPhoto(canvas.toDataURL('image/png'));
 
-            store.addCurrentUser(user);
+            app.store.addCurrentUser(user);
         }
     }
 });
@@ -140,8 +140,8 @@ Vue.component('chat-users', {
     `,
     data: function () {
         return {
-            users: store.state.users,
-            currentUser: store.state.currentUser
+            users: app.store.state.users,
+            currentUser: app.store.state.currentUser
 
         };
     },
@@ -150,8 +150,8 @@ Vue.component('chat-users', {
             const username = this.currentUser.username;
             const newUser = new User(username);
             
-            store.addUser(newUser);
-            store.addCurrentUser(newUser);
+            app.store.addUser(newUser);
+            app.store.addCurrentUser(newUser);
 
             this.shareUser(newUser);
 
@@ -203,14 +203,14 @@ Vue.component('chat-session', {
     `,
     data: function () {
         return {
-            messages :store.state.messages,
+            messages :app.store.state.messages,
             currentMessage: ''
         };
     },
     methods: {
         sendMessage: function () {
             const textMsg = this.currentMessage;
-            const message = new Message(textMsg, store.state.currentUser);
+            const message = new Message(textMsg, app.store.state.currentUser);
 
             socket.emit('chatSessionMsgSend', message);
             this.currentMessage = '';
@@ -226,7 +226,7 @@ Vue.component('chat-session', {
         }
     },
     beforeMount () {
-        this.messages = store.state.messages;
+        this.messages = app.store.state.messages;
     }
 
 });
@@ -238,21 +238,21 @@ const chatApp = new Vue({
 
 app.socketCallbacks = {
     chatSessionMsgSend(message) {
-        store.addMessage(message);
+        app.store.addMessage(message);
     },
     chatStateUserAdded(user) {
-        store.addUser(user);
+        app.store.addUser(user);
     },
     serverChatState(serverState) {
-        if (serverState.users.length != store.state.users) {
+        if (serverState.users.length != app.store.state.users) {
             serverState.users.forEach(element => {
-                store.addUser(element);
+                app.store.addUser(element);
             });
         }
 
-        if (serverState.messages.length != store.state.messages) {
+        if (serverState.messages.length != app.store.state.messages) {
             serverState.messages.forEach(element => {
-                store.addMessage(element);
+                app.store.addMessage(element);
             })
         }
 
