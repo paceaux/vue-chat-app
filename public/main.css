@@ -2,4 +2,5 @@
 @import url(./generic.css);
 @import url(./elements.css);
 @import url(./component-chat.css);
+@import url(./component-chat-message.css);
 @import url(./component-stream.css);

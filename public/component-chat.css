@@ -62,4 +62,21 @@
 }
 
 
+.userPic__camera {
+    position: fixed;
+    top: 19.1vh;
+    bottom: 19.1vh;
+    left: 19.1vw;
+    right: 19.1vw;
+    z-index: 3;
+    padding: .618rem;
+    background: hsla(190, 60%, 67%, 0.3);
+
+}
+
+.userPic__video {
+    display:inline-block;
+    width: 45%;
+}
+
 
