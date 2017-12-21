@@ -1,10 +1,12 @@
 .chat {
+    flex-grow: 1;
     display: grid;
-    grid-template-rows: repeat(6, 16.5%);
-    grid-template-columns: repeat(6, 16.5%);
+    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     overflow: hidden;
     font-size: .75em;
-    height: 80vh;
+    flex-basis: 100%;
+    
 }
 
 .chat__send {
@@ -43,6 +45,10 @@
     grid-row-start:1;
     grid-row-end:1;
     overflow-y: scroll;
+}
+
+.chat__session-message {
+    flex-grow: 1;
 }
 
 .chat__session-messageField {
