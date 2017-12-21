@@ -1,9 +1,10 @@
 .chat {
     display: grid;
-    grid-template-rows: 16rem 6rem;
-    grid-template-columns: 12rem auto;
+    grid-template-rows: repeat(6, 16.5%);
+    grid-template-columns: repeat(6, 16.5%);
     overflow: hidden;
     font-size: .75em;
+    height: 80vh;
 }
 
 .chat__send {
@@ -17,7 +18,7 @@
 
 .chat__users {
     grid-row-start: 1;
-    grid-row-end: 3;
+    grid-row-end: 7;
     grid-column-start: 1;
     grid-column-end: 1;
 
@@ -30,9 +31,9 @@
 
 .chat__session {
     grid-row-start: 1;
-    grid-row-end: 3;
+    grid-row-end: 7;
     grid-column-start:2;
-    grid-column-end: 3;
+    grid-column-end: 7;
     display: grid;
     grid-template-rows: 1fr 6rem;
     grid-template-columns: 100%;
@@ -41,6 +42,7 @@
 .chat__session-messages {
     grid-row-start:1;
     grid-row-end:1;
+    overflow-y: scroll;
 }
 
 .chat__session-messageField {
