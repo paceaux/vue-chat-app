@@ -161,7 +161,7 @@ html {
     /*Comment-C*/
     content: open-quote;
     font-size: 4em;
-    line-height: 0.1em;
+    line-height: .7;
     margin-right: 0.25em;
     vertical-align: -0.4em;
   }
