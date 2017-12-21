@@ -103,7 +103,20 @@
     background: rgb(220,220,220);
 }
 
+.camera__self {
+    position: relative;
+    display:inline-block;
+    width: 45%;
+}
+
+.camera__video {
+    width: 100%;
+}
+
 .camera__record {
+    position: absolute;
+    bottom: 4px;
+    right: 0;
     font-size: 1em;
     line-height: 2;
     background: rgb(245,245,245);
@@ -124,9 +137,8 @@
     margin-right: .5em;
 }
 
-.camera__video {
-    display:inline-block;
-    width: 45%;
+.camera__canvas {
+    max-width: 45%;
 }
 
 

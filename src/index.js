@@ -58,23 +58,27 @@ Vue.component('chat-user-item', {
 Vue.component('user-take-pic',  {
     template: `
         <fieldset class="chat__users-userPic userPic">
-            
             <button class="userPic__start" v-on:click="startVideo">Add Your Photo</button>
-            <div class="userPic__camera-container camera-container" v-if="isStreaming">
-                <div class="userPic__camera camera" >
-                    <video class="camera__video" v-on:play="videoPlay" autoplay>
-                        <source v-if="isStreaming" :src="videoSrc" :type="type">
-                    </video>
-                    <canvas class="camera__canvas" :width="videoWidth" :height="videoHeight"></canvas>
-                    <button class="camera__record" v-on:click="takePicture">Take Picture</button>
+            <div class="userPic__camera-container camera-container" v-if="isRecording">
+                <section class="userPic__camera camera" >
+                    <div class="camera__self">
+                        <video class="camera__video" 
+                        v-on:play="videoPlay" 
+                        v-on:click="takePicture" 
+                        autoplay>
+                            <source v-if="isRecording" :src="videoSrc" :type="type">
+                        </video>
+                        <button class="camera__record" v-on:click="takePicture">Take Picture</button>
+                    </div>
+                    <canvas class="camera__canvas" v-bind:width="videoWidth" v-bind:height="videoHeight"></canvas>
                     <a href="#" class="camera__close" v-on:click="closeCamera">x</a>
-                </div>
+                </section>
             </div>
         </fieldset>
     `,
     data: function () {
         return {
-            isStreaming: false,
+            isRecording: false,
             stream: '',
             videoSrc: '',
             type: 'video/mp4',
@@ -87,32 +91,20 @@ Vue.component('user-take-pic',  {
         startVideo: function () {
             navigator.mediaDevices.getUserMedia({video:true, audio:false})
             .then((stream) => {
-                this.isStreaming = true;
+                this.isRecording = true;
                 this.videoSrc = URL.createObjectURL(stream);
                 this.stream = stream;
             });
         },
         videoPlay: function (evt) {
-            this.videoWidth = evt.target.offsetWidth;
-            this.videoHeight = evt.target.offsetHeight;
-        },
-        clearPicture: function () {
-            const currentWidth = this.videoWidth;
-
-            this.videoWidth = 0;
-            this.videoWidth = currentWidth;
-            
+            this.videoWidth = evt.target.clientWidth;
+            this.videoHeight = evt.target.clientHeight;
         },
         takePicture: function () {
-            this.clearPicture();
             const canvas = this.$el.querySelector('canvas');
             const context = canvas.getContext('2d');
             const video = this.$el.querySelector('video');
             const user = app.store.state.currentUser;
-
-            if (video.offsetHeight != this.videoHeight) {
-                this.videoHeight = video.offsetHeight;
-            }
 
             context.drawImage(video, 0, 0, this.videoWidth, this.videoHeight);
 
@@ -124,7 +116,7 @@ Vue.component('user-take-pic',  {
             evt.preventDefault();
             const tracks = this.stream.getTracks();
 
-            this.isStreaming = false;
+            this.isRecording = false;
             this.stream = '';
 
             tracks.forEach(track => {
@@ -132,6 +124,18 @@ Vue.component('user-take-pic',  {
             });
 
         }
+    },
+    updated: function () {
+        if (this.isRecording) {
+            const video = this.$el.querySelector('video');
+            this.videoWidth = video.clientWidth;
+            this.videoHeight = video.clientHeight;
+        }
+    },
+    nextTick: function () {
+        const video = this.$el.querySelector('video');
+        this.videoWidth = video.clientWidth;
+        this.videoHeight = video.clientHeight;
     }
 });
 
