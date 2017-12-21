@@ -1,10 +1,20 @@
 export default class {
     constructor(name){
-        this.username = name;
-        this.timeCreated = Date.now();
-        this.messages = [];
+        if (typeof name == 'object' ) {
+            Object.assign(this, name);
+        } else {
+            this.username = name;
+            this.timeCreated = Date.now();
+            this.messages = [];
+        }
+    }
+    addName (name) {
+        this.name = name;
     }
     addMessage(message) {
         this.messages.push(message);
+    }
+    addPhoto(photo) {
+        this.photo = photo;
     }
 }

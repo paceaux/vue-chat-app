@@ -298,7 +298,7 @@ const app = {};
 
 app.init = function init() {
     socket.on('connect', ()=>{
-        console.log('you connected');
+        console.info('you connected');
     });
     app.bindSocketEvents();
 };
@@ -307,10 +307,36 @@ app.data = {
     codec: 'video/webm; codecs="vp8"'
 };
 
-app.state = {
-    messages: [],
-    users: [],
-    currentUser: JSON.parse(localStorage.getItem('app-currentUser')) || new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */]()
+const store = {
+    debug: true,
+    state: {
+        messages: [],
+        users:[],
+        currentUser: localStorage.getItem('app-currentUser') && new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */](JSON.parse(localStorage.getItem('app-currentUser'))) || new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */]()
+    },
+    addMessage(message) {
+        if (this.debug) console.info('addmessage', message);
+        this.state.messages.push(message);
+    },
+    addUsers(users) {
+        if (this.debug) console.info('addUsers', users);
+        this.state.users = users;
+    },
+    addUser(user){
+        if (this.debug) console.info('addUser', user);
+        this.state.users.push(user);
+    },
+    addCurrentUser(user) {
+        if (this.debug) console.info('addCurrent', user);
+        this.state.currentUser = user;
+        localStorage.setItem('app-currentUser', JSON.stringify(user));
+    },
+    getCurrentUser() {
+        const storedUser = JSON.parse(localStorage.getItem('app-currentUser'));
+        const typedUser = storedUser && new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */](storedUser) || new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */]();
+
+        return typedUser;
+    }
 };
 
 __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-user-item', {
@@ -341,7 +367,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('user-take-pic', 
             type: 'video/mp4',
             videoWidth: 0,
             videoHeight: 0,
-            userPicture: app.state.currentUser.photo
+            userPicture: store.state.currentUser.photo
         };
     },
     methods: {
@@ -368,7 +394,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('user-take-pic', 
             const canvas = this.$el.querySelector('canvas');
             const context = canvas.getContext('2d');
             const video = this.$el.querySelector('video');
-
+            const user = store.state.currentUser;
 
             if (video.offsetHeight != this.videoHeight) {
                 this.videoHeight = video.offsetHeight;
@@ -376,11 +402,9 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('user-take-pic', 
 
             context.drawImage(video, 0, 0, this.videoWidth, this.videoHeight);
 
-            app.state.currentUser.photo = canvas.toDataURL('image/png');
+            user.addPhoto(canvas.toDataURL('image/png'));
 
-            console.log(app.state.currentUser);
-            localStorage.setItem('app-currentUser', JSON.stringify(app.state.currentUser));
-
+            store.addCurrentUser(user);
         }
     }
 });
@@ -407,10 +431,9 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-users', {
     `,
     data: function () {
         return {
-            users: app.state.users,
-            get currentUser() {
-                return app.state.currentUser;
-            }
+            users: store.state.users,
+            currentUser: store.state.currentUser
+
         };
     },
     methods: {
@@ -418,15 +441,18 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-users', {
             const username = this.currentUser.username;
             const newUser = new __WEBPACK_IMPORTED_MODULE_1__user_js__["a" /* default */](username);
             
-            app.state.users.push(newUser);
-            app.state.currentUser = newUser;
+            store.addUser(newUser);
+            store.addCurrentUser(newUser);
 
-            this.saveUser(newUser);
+            this.shareUser(newUser);
 
         },
-        saveUser: function (user) {
+        shareUser: function (user) {
             socket.emit('chatStateAddUser', user);
-            localStorage.setItem('app-currentUser', JSON.stringify(user));
+        }
+    },
+    watch: {
+        users: function (newUsers) {
         }
     }
 });
@@ -468,18 +494,15 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-session', {
     `,
     data: function () {
         return {
-            get messages() {
-                return app.state.messages;
-            },
+            messages :store.state.messages,
             currentMessage: ''
         };
     },
     methods: {
         sendMessage: function () {
             const textMsg = this.currentMessage;
-            const message = new __WEBPACK_IMPORTED_MODULE_2__message_js__["a" /* default */](textMsg, app.state.currentUser);
+            const message = new __WEBPACK_IMPORTED_MODULE_2__message_js__["a" /* default */](textMsg, store.state.currentUser);
 
-            console.log('sending Message', message);
             socket.emit('chatSessionMsgSend', message);
 
             this.currentMessage = '';
@@ -492,26 +515,34 @@ __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */].component('chat-session', {
     },
     watch: {
         messages: function (newMessages) {
-            console.log("there's new messages!");
         }
     },
     beforeMount () {
-        this.messages = app.state.messages;
+        this.messages = store.state.messages;
     }
 
 });
 
 
-new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
+const chatApp = new __WEBPACK_IMPORTED_MODULE_0_vue__["a" /* default */]({
     el: '.chat'
 });
 
 app.socketCallbacks = {
     chatSessionMsgSend(message) {
-        app.state.messages.push(message);
+        store.addMessage(message);
     },
     chatStateUserAdded(user) {
-        app.state.users.push(user);
+        store.addUser(user);
+    },
+    serverChatState(serverState) {
+        if (serverState.users.length != store.state.users) {
+            serverState.users.forEach(element => {
+                store.addUser(element);
+            });
+        }
+
+        chatApp.$forceUpdate();
     }
     // chatSessionConnect(messages){
     //     console.log('got chatSessionConnect', messages);
@@ -11493,12 +11524,22 @@ exports.clearImmediate = clearImmediate;
 "use strict";
 /* harmony default export */ __webpack_exports__["a"] = (class {
     constructor(name){
-        this.username = name;
-        this.timeCreated = Date.now();
-        this.messages = [];
+        if (typeof name == 'object' ) {
+            Object.assign(this, name);
+        } else {
+            this.username = name;
+            this.timeCreated = Date.now();
+            this.messages = [];
+        }
+    }
+    addName (name) {
+        this.name = name;
     }
     addMessage(message) {
         this.messages.push(message);
+    }
+    addPhoto(photo) {
+        this.photo = photo;
     }
 });
 

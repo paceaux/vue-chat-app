@@ -46,6 +46,8 @@ io.on('connect', (socket)=> {
     }
 });
 
+
+
 io.on('connection', (socket) => {
     const socketEvents = {
         chatSessionMsgSend(data) {
@@ -58,12 +60,24 @@ io.on('connection', (socket) => {
                 state.users.push(user);
                 socket.broadcast.emit('chatStateUserAdded', user);
             }
+        },
+        chatStateDelUser(user) {
+            if (state.users.indexOf(user) != -1) {
+                state.users.splice(state.users.indexOf(user), 1);
+                socket.broadcast.emit('chatStateUserAdded', user);
+            }
+        },
+        disconnect(evt) {
+            console.log('got disconnected');
+            console.log(evt);
         }
     };
 
     for (let eventName in socketEvents) {
         socket.on(eventName, socketEvents[eventName]);
     }
+
+    socket.emit('serverChatState', state);
 
 
 
