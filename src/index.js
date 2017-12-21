@@ -18,7 +18,7 @@ app.data = {
 
 app.state = {
     messages: [],
-    users: [new User('taco'), new User('paco')],
+    users: [],
     currentUser: JSON.parse(localStorage.getItem('app-currentUser')) || new User()
 };
 

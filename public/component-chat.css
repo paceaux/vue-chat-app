@@ -52,11 +52,6 @@
     background-color: var(--mainBG);
 }
 
-.chat__session-message {
-    flex-grow:1;
-    height: 100%;
-}
-
 .chat__session-messageSend {
     flex-basis: 4rem;
 }
