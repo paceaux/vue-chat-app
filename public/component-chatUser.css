@@ -13,4 +13,9 @@
 
 .userList__item {
     margin: .4em 0;
+    animation-name: popIn;
+    animation-duration: var(--anim8Duration);
+    animation-iteration-count: 1;
+    animation-timing-function: var(--anim8Timing);
 }
+
