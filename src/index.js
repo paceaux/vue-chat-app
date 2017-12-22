@@ -206,11 +206,16 @@ Vue.component('chat-session', {
 
             socket.emit('chatSessionMsgSend', message);
             this.currentMessage = '';
+            this.scrollToLastMessage();
         },
         readMessage: function (evt) {
             if (evt.which == 13) {
                 this.sendMessage();
             }
+        },
+        scrollToLastMessage() {
+            const sessionContainer = this.$el.querySelector('.chat__session-messages');
+            sessionContainer.scrollTop = sessionContainer.scrollHeight;
         }
     },
     watch: {
@@ -219,6 +224,9 @@ Vue.component('chat-session', {
     },
     beforeMount () {
         this.messages = app.store.state.messages;
+    },
+    updated() {
+        this.scrollToLastMessage();
     }
 
 });
