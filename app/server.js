@@ -37,11 +37,7 @@ app.get('/', (req, res) => {
 
 
 io.on('connect', (socket)=> {
-    if (state.messages.length > 0) {
-        if (state.messages.length > 0) {
-            socket.emit('serverChatState', state);
-        }
-    }
+
 });
 
 
@@ -54,15 +50,14 @@ io.on('connection', (socket) => {
             socket.broadcast.emit('chatSessionMsgSend', data);
         },
         chatStateAddUser(user) {
-            const existingUsers = state.users.filter(user => user.socketId && user.socketId == socket.id);
+            const existingUsers = state.users.filter(userEl =>  userEl.timeCreated == user.timeCreated);
 
             user.socketId = socket.id;
-            if (existingUsers.length == 0) {
-                state.users.push(user);
-                socket.broadcast.emit('chatStateUserAdded', user);
-                socket.emit('chatStateUserAdded', user);
-            }
+            state.users.push(user);
+            socket.broadcast.emit('chatStateUserAdded', user);
+            socket.emit('chatStateUserAdded', user);
             
+
         },
         chatStateUpdateUser(user) {
             const userIdx = state.users.findIndex(el => {
@@ -72,6 +67,7 @@ io.on('connection', (socket) => {
             if (userIdx != -1) {
                 state.users[userIdx] = user;
                 socket.broadcast.emit('chatStateUserUpdated', user);
+                socket.emit('chatStateUserUpdated', user);
             }
 
         },
@@ -93,15 +89,11 @@ io.on('connection', (socket) => {
         }
     };
     state.connections++;
-    console.log('connect');
-    console.log('connections:', state.connections);
-    console.log(socket.id);
     for (let eventName in socketEvents) {
         socket.on(eventName, socketEvents[eventName]);
     }
 
     socket.emit('serverChatState', state);
-    console.groupEnd();
 });
 
 

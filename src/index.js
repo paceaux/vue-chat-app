@@ -25,7 +25,6 @@ Vue.component('chat-user-item', {
         </article>
     `,
     beforeMount() {
-        console.log(this.props);
     }
 });
 
@@ -153,7 +152,6 @@ Vue.component('chat-users', {
             
             app.store.addCurrentUser(newUser);
 
-            console.log('adding new user', newUser);
 
             this.shareUser(newUser);
 
@@ -228,18 +226,17 @@ Vue.component('chat-session', {
         },
         scrollToLastMessage() {
             const sessionContainer = this.$el.querySelector('.chat__session-messages');
-            sessionContainer.scrollTop = sessionContainer.scrollHeight;
+
+            if (sessionContainer)  sessionContainer.scrollTop = sessionContainer.scrollHeight;
         }
     },
     watch: {
         messages: function (newMessages) {
         }
     },
-    beforeMount () {
-        this.messages = app.store.state.messages;
-    },
+
     updated() {
-        this.scrollToLastMessage();
+        if (this.messages.length > 0) this.scrollToLastMessage();
     }
 
 });
@@ -254,31 +251,25 @@ app.socketCallbacks = {
         app.store.addMessage(message);
     },
     chatStateUserAdded(user) {
-        console.log('told to add user');
         app.store.addUser(user);
     },
     chatStateUserUpdated(user) {
-        console.log('user needs to be updated');
         app.store.updateUser(user);
     },
     serverChatState(serverState) {
-        if (serverState.users.length != app.store.state.users) {
-            serverState.users.forEach(element => {
-                app.store.addUser(element);
-            });
-        }
 
-        if (serverState.messages.length != app.store.state.messages) {
-            serverState.messages.forEach(element => {
-                app.store.addMessage(element);
-            });
-        }
+        app.store.addUsers(serverState.users);
+
+        // if (serverState.messages.length != app.store.state.messages) {
+        //     serverState.messages.forEach(element => {
+        //         app.store.addMessage(element);
+        //     });
+        // }
 
         chatApp.$forceUpdate();
     },
     connect(data){
-        console.info('you connected?');
-        console.log(socket.id);
+        console.info(socket.id);
     }
     // chatSessionConnect(messages){
     //     console.log('got chatSessionConnect', messages);

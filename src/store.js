@@ -11,9 +11,19 @@ export default {
         if (this.debug) console.info('addmessage', message);
         this.state.messages.push(message);
     },
-    addUsers(users) {
-        if (this.debug) console.info('addUsers', users);
-        this.state.users = users;
+    addUsers(newUsers) {
+        if (this.debug) console.info('addUsers', newUsers);
+
+        const currentUsers = this.state.users;
+
+        newUsers.forEach(newUser=> {
+            const existingUser = currentUsers.find((currentEl) => {
+                return currentEl.timeCreated == newUser.timeCreated;
+            });
+            if (!existingUser) {
+                this.addUser(newUser);
+            }
+        });
     },
     addUser(user){
         if (this.debug) console.info('addUser', user);
