@@ -5,11 +5,20 @@
 
 .chatMessage__content {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .chatMessage__user {
     flex-grow: 0;
     display: inline-flex;
     flex-direction: column;
+}
+
+.chatMessage__time {
+    color: #aaa;
+    font-size: .618em;
+    font-style: italic;
 }
 

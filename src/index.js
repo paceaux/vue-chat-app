@@ -171,6 +171,7 @@ Vue.component('chat-message', {
     <blockquote class="chatMessage">
         <div class="chatMessage__content">
             <p>{{message.content}}</p>
+            <time class="chatMessage__time" :datetime="datetime">{{friendlyTime}}</time>
         </div>
         <div class="chatMessage__user chatUser">
             <img class="chatUser__img" v-if="message.user.photo" v-bind:src="message.user.photo" />
@@ -178,7 +179,17 @@ Vue.component('chat-message', {
         </div>
     </blockquote>
     `,
-    props: ['message']
+    props: ['message'],
+    computed: {
+        friendlyTime: function () {
+            const time = new Date(this.message.timeCreated);
+            return time.toLocaleTimeString();
+        },
+        datetime: function() {
+            const time = new Date(this.message.timeCreated);
+            return time.toJSON();
+        }
+    }
 
 });
 
