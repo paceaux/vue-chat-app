@@ -2,50 +2,18 @@ require('./polyfills.js');
 import Vue from 'vue';
 import User from './user.js';
 import Message from './message.js';
+import Store from './store.js';
+
 const socket = io.connect();
 const app = {};
 
+app.store = Store;
 app.init = function init() {
-    socket.on('connect', ()=>{
-        console.info('you connected');
-    });
     app.bindSocketEvents();
 };
 
 app.data = {
     codec: 'video/webm; codecs="vp8"'
-};
-
-app.store = {
-    debug: true,
-    state: {
-        messages: [],
-        users:[],
-        currentUser: localStorage.getItem('app-currentUser') && new User(JSON.parse(localStorage.getItem('app-currentUser'))) || new User()
-    },
-    addMessage(message) {
-        if (this.debug) console.info('addmessage', message);
-        this.state.messages.push(message);
-    },
-    addUsers(users) {
-        if (this.debug) console.info('addUsers', users);
-        this.state.users = users;
-    },
-    addUser(user){
-        if (this.debug) console.info('addUser', user);
-        this.state.users.push(user);
-    },
-    addCurrentUser(user) {
-        if (this.debug) console.info('addCurrent', user);
-        this.state.currentUser = user;
-        localStorage.setItem('app-currentUser', JSON.stringify(user));
-    },
-    getCurrentUser() {
-        const storedUser = JSON.parse(localStorage.getItem('app-currentUser'));
-        const typedUser = storedUser && new User(storedUser) || new User();
-
-        return typedUser;
-    }
 };
 
 Vue.component('chat-user-item', {
@@ -265,6 +233,7 @@ app.socketCallbacks = {
         app.store.addMessage(message);
     },
     chatStateUserAdded(user) {
+        console.log('told to add user');
         app.store.addUser(user);
     },
     serverChatState(serverState) {
@@ -277,10 +246,14 @@ app.socketCallbacks = {
         if (serverState.messages.length != app.store.state.messages) {
             serverState.messages.forEach(element => {
                 app.store.addMessage(element);
-            })
+            });
         }
 
         chatApp.$forceUpdate();
+    },
+    connect(data){
+        console.info('you connected?');
+        console.log(socket.id);
     }
     // chatSessionConnect(messages){
     //     console.log('got chatSessionConnect', messages);
