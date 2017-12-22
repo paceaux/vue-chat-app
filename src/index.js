@@ -117,7 +117,7 @@ Vue.component('user-take-pic',  {
 Vue.component('chat-users', {
     template: `
         <section class="chat__users">
-            <fieldset class="chat__users-current">
+            <header class="chat__users-current">
                 <template v-if="currentUser.photo">
                     <img height="50" width="50" v-bind:src="currentUser.photo" />
                 </template>
@@ -128,8 +128,9 @@ Vue.component('chat-users', {
                     <button class="chat__users-userField-submit" v-on:click="addUser">Submit</button>
                 </fieldset>
                 <user-take-pic></user-take-pic>
-            </fieldset>
+            </header>
             <section class="chat__users-list userList">
+                <h2 class="chat__users-list-header">Current Users</h2>
                 <chat-user-item v-for="(user,index) in users"
                 v-bind:user="user"
                 v-bind:index="index"
