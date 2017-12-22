@@ -23,7 +23,8 @@ const host = '127.0.0.1';
 
 const state = {
     users: [],
-    messages: []
+    messages: [],
+    connections: 0
 };
 
 server.listen(port);
@@ -37,12 +38,9 @@ app.get('/', (req, res) => {
 
 io.on('connect', (socket)=> {
     if (state.messages.length > 0) {
-        console.group('connection occured');
-        console.log(state);
         if (state.messages.length > 0) {
-            socket.emit('chatSessionConnect', state.messages);
+            socket.emit('serverChatState', state);
         }
-        console.groupEnd();
     }
 });
 
@@ -56,10 +54,14 @@ io.on('connection', (socket) => {
             socket.broadcast.emit('chatSessionMsgSend', data);
         },
         chatStateAddUser(user) {
-            if (state.users.indexOf(user) === -1) {
+            const existingUsers = state.users.filter(user => user.socketId && user.socketId == socket.id);
+
+            user.socketId = socket.id;
+            if (existingUsers.length == 0) {
                 state.users.push(user);
                 socket.broadcast.emit('chatStateUserAdded', user);
             }
+            
         },
         chatStateDelUser(user) {
             if (state.users.indexOf(user) != -1) {
@@ -68,23 +70,29 @@ io.on('connection', (socket) => {
             }
         },
         disconnect(evt) {
-            console.log('got disconnected');
-            console.log(evt);
+            state.connections--;
+            console.group();
+            console.log('disconnect');
+            console.log("connections:", state.connections);
+            console.groupEnd();
+            let i = state.users.length;
+
+
         }
     };
-
+    state.connections++;
+    console.log('connect');
+    console.log('connections:', state.connections);
+    console.log(socket.id);
     for (let eventName in socketEvents) {
         socket.on(eventName, socketEvents[eventName]);
     }
 
     socket.emit('serverChatState', state);
-
-
-
-
-
-
+    console.groupEnd();
 });
+
+
 
 
  console.log(`Server running at http://${host}:${port}`);
