@@ -17,9 +17,9 @@ app.data = {
 };
 
 Vue.component('chat-user-item', {
-    props: ['username'],
+    props: ['user'],
     template: `
-        <li class="userList__item>{{username}}</li>
+        <li class="userList__item">{{user.username}}</li>
     `,
 });
 
@@ -123,7 +123,11 @@ Vue.component('chat-users', {
                 <user-take-pic></user-take-pic>
             </fieldset>
             <ul class="chat__users-list userList">
-                <li v-for="user in users">{{user.username}}</li>
+                <chat-user-item v-for="(user,index) in users"
+                v-bind:user="user"
+                v-bind:index="index"
+                v-bind:key="user.timeCreated">
+                </chat-user-item>
             </ul>
         </section>
     `,
