@@ -19,6 +19,23 @@ export default {
         if (this.debug) console.info('addUser', user);
         this.state.users.push(user);
     },
+    removeUser(user) {
+        if (this.debug) console.info('removeUser', user);
+
+        const userIdx = this.state.users.findIndex(el=>{
+            return el.timeCreated === user.timeCreated;
+        });
+
+        if (userIdx != -1) {
+            this.state.users.splice(userIdx,1);
+        }
+    },
+    updateUser(user) {
+        if (this.debug) console.info('updateUser', user);
+
+        this.removeUser(user);
+        this.addUser(user);
+    },
     addCurrentUser(user) {
         if (this.debug) console.info('addCurrent', user);
         this.state.currentUser = user;

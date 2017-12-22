@@ -19,8 +19,14 @@ app.data = {
 Vue.component('chat-user-item', {
     props: ['user'],
     template: `
-        <li class="userList__item">{{user.username}}</li>
+        <article class="userList__item chatUser">
+            <img class="chatUser__img" v-if="user.photo" v-bind:src="user.photo" />
+            <h3 class="chatUser__name"> {{user.username}} </h3>
+        </article>
     `,
+    beforeMount() {
+        console.log(this.props);
+    }
 });
 
 Vue.component('user-take-pic',  {
@@ -79,6 +85,7 @@ Vue.component('user-take-pic',  {
             user.addPhoto(canvas.toDataURL('image/png'));
 
             app.store.addCurrentUser(user);
+            socket.emit('chatStateUpdateUser', user);
         },
         closeCamera: function (evt) {
             evt.preventDefault();
@@ -122,13 +129,13 @@ Vue.component('chat-users', {
                 </fieldset>
                 <user-take-pic></user-take-pic>
             </fieldset>
-            <ul class="chat__users-list userList">
+            <section class="chat__users-list userList">
                 <chat-user-item v-for="(user,index) in users"
                 v-bind:user="user"
                 v-bind:index="index"
                 v-bind:key="user.timeCreated">
                 </chat-user-item>
-            </ul>
+            </section>
         </section>
     `,
     data: function () {
@@ -143,8 +150,9 @@ Vue.component('chat-users', {
             const username = this.currentUser.username;
             const newUser = new User(username);
             
-            app.store.addUser(newUser);
             app.store.addCurrentUser(newUser);
+
+            console.log('adding new user', newUser);
 
             this.shareUser(newUser);
 
@@ -247,6 +255,10 @@ app.socketCallbacks = {
     chatStateUserAdded(user) {
         console.log('told to add user');
         app.store.addUser(user);
+    },
+    chatStateUserUpdated(user) {
+        console.log('user needs to be updated');
+        app.store.updateUser(user);
     },
     serverChatState(serverState) {
         if (serverState.users.length != app.store.state.users) {

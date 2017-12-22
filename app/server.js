@@ -60,8 +60,20 @@ io.on('connection', (socket) => {
             if (existingUsers.length == 0) {
                 state.users.push(user);
                 socket.broadcast.emit('chatStateUserAdded', user);
+                socket.emit('chatStateUserAdded', user);
             }
             
+        },
+        chatStateUpdateUser(user) {
+            const userIdx = state.users.findIndex(el => {
+                return el.timeCreated == user.timeCreated;
+            });
+
+            if (userIdx != -1) {
+                state.users[userIdx] = user;
+                socket.broadcast.emit('chatStateUserUpdated', user);
+            }
+
         },
         chatStateDelUser(user) {
             if (state.users.indexOf(user) != -1) {

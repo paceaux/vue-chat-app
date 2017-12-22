@@ -6,6 +6,7 @@ export default class {
             this.username = name;
             this.timeCreated = Date.now();
             this.messages = [];
+            this.photo = '';
         }
     }
     addName (name) {
