@@ -11,6 +11,20 @@ export default {
         if (this.debug) console.info('addmessage', message);
         this.state.messages.push(message);
     },
+    addMessages(newMessages) {
+        if (this.debug) console.info('addMessages', newMessages);
+
+        const currentMessages = this.state.messages;
+
+        newMessages.forEach(newMsg=> {
+            const existingMsg = currentMessages.find((currentEl) => {
+                return currentEl.timeCreated == newMsg.timeCreated;
+            });
+            if (!existingMsg) {
+                this.addMessage(newMsg);
+            }
+        });
+    },
     addUsers(newUsers) {
         if (this.debug) console.info('addUsers', newUsers);
 

@@ -260,11 +260,7 @@ app.socketCallbacks = {
 
         app.store.addUsers(serverState.users);
 
-        // if (serverState.messages.length != app.store.state.messages) {
-        //     serverState.messages.forEach(element => {
-        //         app.store.addMessage(element);
-        //     });
-        // }
+        app.store.addMessages(serverState.messages);
 
         chatApp.$forceUpdate();
     },
