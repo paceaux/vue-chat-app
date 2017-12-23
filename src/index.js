@@ -19,11 +19,37 @@ app.data = {
 Vue.component('chat-user-item', {
     props: ['user'],
     template: `
-        <article class="userList__item chatUser">
+        <article class="userList__item chatUser" v-bind:class="{'chatUser--isExpanded':isExpanded}" v-on:dblclick="isExpanded = !isExpanded">
             <img class="chatUser__img" v-if="user.photo" v-bind:src="user.photo" />
-            <h3 class="chatUser__name"> {{user.username}} </h3>
+            <div class="chatUser__content">
+                <h3 class="chatUser__name"> {{user.username}} </h3>
+                <time v-if="isExpanded" class="chatUser__created" :datetime="datetime">{{friendlyTime}}</time>
+                <p v-if="isCurrentUser && isExpanded">This is you, dummy.</p>
+
+            </div>
+            <aside class="chatUser__info" v-if="isExpanded && !isCurrentUser">
+                <button> get Personal with 'em! </button>
+            </aside>
         </article>
     `,
+    data: function () {
+        return {
+            isExpanded: false
+        };
+    },
+    computed: {
+        friendlyTime: function () {
+            const time = new Date(this.user.timeCreated);
+            return `${time.toLocaleDateString()} ${time.toLocaleTimeString()}`;
+        },
+        datetime: function() {
+            const time = new Date(this.user.timeCreated);
+            return time.toJSON();
+        },
+        isCurrentUser: function () {
+            return this.user.timeCreated === app.store.state.currentUser.timeCreated;
+        }
+    },
     beforeMount() {
     }
 });

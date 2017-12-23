@@ -4,11 +4,14 @@
     font-size: .618em;
     padding: .618em;
     background-color: var(--cardBG);
+    transition: all var(--anim8Duration) var(--anim8Timing);
 }
 .chatUser__img {
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    transition: all var(--anim8Duration) var(--anim8Timing);
+
 }
 
 .userList__item {
@@ -17,5 +20,32 @@
     animation-duration: var(--anim8Duration);
     animation-iteration-count: 1;
     animation-timing-function: var(--anim8Timing);
+}
+
+.chatUser__created {
+    margin: 0 .618rem;
+}
+
+.chatUser--isExpanded {
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    right:0;
+    bottom: 0;
+    padding: 19.1%;
+    background: rgba(255,255,255,.85);
+}
+
+.chatUser--isExpanded .chatUser__img {
+    height: 150px;
+    width: 150px;
+    border-radius: 5%;
+}
+
+.chatUser--isExpanded .chatUser__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
