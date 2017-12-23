@@ -5,7 +5,13 @@ export default {
     state: {
         messages: [],
         users:[],
-        currentUser: localStorage.getItem('app-currentUser') && new User(JSON.parse(localStorage.getItem('app-currentUser'))) || new User()
+        currentUser: localStorage.getItem('app-currentUser') && new User(JSON.parse(localStorage.getItem('app-currentUser'))) || new User(),
+        isInPersonalSession: false,
+        videoStream: {},
+        personalSession: {
+            current: {},
+            target: {}
+        },
     },
     addMessage(message) {
         if (this.debug) console.info('addmessage', message);
@@ -70,5 +76,13 @@ export default {
         const typedUser = storedUser && new User(storedUser) || new User();
 
         return typedUser;
+    },
+    addPersonalSession(currentUser, targetUser) {
+        this.state.personalSession.current = currentUser;
+        this.state.personalSession.target = targetUser;
+    },
+    removePersonalSession() {
+        this.state.personalSession.current = {};
+        this.state.personalSession.target ={};
     }
 }

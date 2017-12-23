@@ -28,13 +28,14 @@ Vue.component('chat-user-item', {
 
             </div>
             <aside class="chatUser__info" v-if="isExpanded && !isCurrentUser">
-                <button> get Personal with 'em! </button>
+                <button v-on:click="getPersonal"> get Personal with 'em! </button>
             </aside>
         </article>
     `,
     data: function () {
         return {
-            isExpanded: false
+            isExpanded: false,
+            isInPersonalSession: app.store.isInPersonalSession
         };
     },
     computed: {
@@ -48,6 +49,15 @@ Vue.component('chat-user-item', {
         },
         isCurrentUser: function () {
             return this.user.timeCreated === app.store.state.currentUser.timeCreated;
+        }
+    },
+    methods: {
+        getPersonal() {
+            this.isExpanded = false;
+            app.store.state.isInPersonalSession = true;
+            app.store.addPersonalSession(app.store.state.currentUser, this.user);
+
+            console.log(app.store.state);
         }
     },
     beforeMount() {
