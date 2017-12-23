@@ -231,7 +231,7 @@ Vue.component('chat-message', {
 
 Vue.component('chat-session', {
     template: `
-        <section class="chat__session">
+        <section class="chat__session" v-if="!isInPersonalSession">
             <output class="chat__session-messages" v-if="messages.length > 0">
                 <chat-message v-for="(message,index) in messages"
                 v-bind:message="message"
@@ -254,7 +254,8 @@ Vue.component('chat-session', {
     data: function () {
         return {
             messages :app.store.state.messages,
-            currentMessage: ''
+            currentMessage: '',
+            isInPersonalSession: app.store.state.isInPersonalSession
         };
     },
     methods: {
