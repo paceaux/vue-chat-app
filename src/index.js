@@ -230,8 +230,8 @@ Vue.component('chat-message', {
 
 Vue.component('chat-session', {
     template: `
-        <section class="chat__session chat__session--group" v-show="isInChatSession">
-            <output class="chat__session-messages" v-if="messages.length > 0">
+        <section class="chat__session chat-session chat-session--group" v-show="isInChatSession">
+            <output class="chat-session__messages" v-if="messages.length > 0">
                 <chat-message v-for="(message,index) in messages"
                 v-bind:message="message"
                 v-bind:index="index"
@@ -239,14 +239,14 @@ Vue.component('chat-session', {
                 >
                 </chat-message>
             </output>
-            <article class="chat__session-info" v-if="messages.length === 0">
+            <article class="chat-session__info" v-if="messages.length === 0">
                 <p>No one has said anything</p>
             </article>
-            <div class="chat__session-messageField">
-                <textarea class="chat__session-message" v-model="currentMessage" v-on:keyup="readMessage">
+            <div class="chat-session__messageField">
+                <textarea class="chat-session__message" v-model="currentMessage" v-on:keyup="readMessage">
 
                 </textarea>
-                <button class="chat__session-messageSend" v-on:click="sendMessage">Send</button>
+                <button class="chat-session__messageSend" v-on:click="sendMessage">Send</button>
             </div>
         </section>
     `,
@@ -272,7 +272,7 @@ Vue.component('chat-session', {
             }
         },
         scrollToLastMessage() {
-            const sessionContainer = this.$el.querySelector('.chat__session-messages');
+            const sessionContainer = this.$el.querySelector('.chat-session__messages');
 
             if (sessionContainer)  sessionContainer.scrollTop = sessionContainer.scrollHeight;
         }
@@ -301,14 +301,14 @@ Vue.component('chat-session', {
 
 Vue.component('private-session', {
     template: `
-    <section class="chat__session chat__session--private private-session" v-if="isInPrivateSession">
-        <header class="chat__session-header">
-            <h1 class="private-session__title">Private Session with {{privateUser.username}}</h1>
-            <img class="private-session__user-img" v-if="privateUser.photo" v-bind:src="privateUser.photo" />        
-            <button class="private-session__close" v-on:click="getGroup">Back to Group</button>
+    <section class="chat__session chat__session--private chat-session" v-if="isInPrivateSession">
+        <header class="chat-session__header">
+            <h1 class="chat-session__title">Private Session with {{privateUser.username}}</h1>
+            <img class="chat-session__user-img" v-if="privateUser.photo" v-bind:src="privateUser.photo" />        
+            <button class="chat-session__close" v-on:click="getGroup">Back to Group</button>
 
         </header>
-        <output class="chat__session-messages" v-if="privateSession.messages.length > 0">
+        <output class="chat-session__messages" v-if="privateSession.messages.length > 0">
         <chat-message v-for="(message,index) in messages"
         v-bind:message="message"
         v-bind:index="index"

@@ -27,8 +27,7 @@
     display: grid;
     grid-template-columns: 100%;
     grid-template-rows: 6rem 1fr;
-
-    background-color:  var(--mainBG)
+    background-color:  var(--mainBG);
 }
 
 .chat__session {
@@ -36,40 +35,6 @@
     grid-row-end: 7;
     grid-column-start:2;
     grid-column-end: 7;
-    display: grid;
-    grid-template-rows: 1fr 6rem;
-    grid-template-columns: 100%;
-}
-
-.chat__session-messages {
-    grid-row-start:1;
-    grid-row-end:1;
-    overflow-y: scroll;
-}
-
-.chat__session-info {
-    grid-row-start:1;
-    grid-row-end:1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 2em;
-}
-
-.chat__session-message {
-    flex-grow: 1;
-}
-
-.chat__session-messageField {
-    grid-row-start:2;
-    grid-row-end: 3;
-    display: flex;
-    background-color: var(--mainBG);
-}
-
-.chat__session-messageSend {
-    flex-basis: 4rem;
 }
 
 

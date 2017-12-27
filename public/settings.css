@@ -1,5 +1,7 @@
 :root {
     --mainBG: hsla(190, 60%, 67%, 0.788);
+    --frameBorderColor: hsla(190,60%,17%, 1);
+    --frameBorder: 4px solid var(--frameBorderColor);
     --cardBG: rgba(255,255,255,.7);
     --anim8Duration: .35s;
     --anim8Timing: ease-in;
