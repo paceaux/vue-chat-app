@@ -10,7 +10,8 @@ export default {
         videoStream: {},
         personalSession: {
             current: {},
-            target: {}
+            target: {},
+            messages: []
         },
     },
     addMessage(message) {
@@ -84,5 +85,23 @@ export default {
     removePersonalSession() {
         this.state.personalSession.current = {};
         this.state.personalSession.target ={};
-    }
+    },
+    addPersonalMessage(message) {
+        if (this.debug) console.info('addPersonalMessage', message);
+        this.state.personalSession.messages.push(message);
+    },
+    addPersonalMessages(newMessages) {
+        if (this.debug) console.info('addPersonalMessages', newMessages);
+
+        const currentMessages = this.state.personalSession.messages;
+
+        newMessages.forEach(newMsg=> {
+            const existingMsg = currentMessages.find((currentEl) => {
+                return currentEl.timeCreated == newMsg.timeCreated;
+            });
+            if (!existingMsg) {
+                this.addPersonalMessage(newMsg);
+            }
+        });
+    },
 }
