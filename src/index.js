@@ -28,14 +28,14 @@ Vue.component('chat-user-item', {
 
             </div>
             <aside class="chatUser__info" v-if="isExpanded && !isCurrentUser">
-                <button v-on:click="getPersonal"> get Personal with 'em! </button>
+                <button v-on:click="startPrivateSession"> get Personal with 'em! </button>
             </aside>
         </article>
     `,
     data: function () {
         return {
             isExpanded: false,
-            isInPersonalSession: app.store.state.isInPersonalSession
+            isInPrivateSession: app.store.state.isInPrivateSession
         };
     },
     computed: {
@@ -52,10 +52,10 @@ Vue.component('chat-user-item', {
         }
     },
     methods: {
-        getPersonal() {
+        startPrivateSession() {
             this.isExpanded = false;
-            app.store.state.isInPersonalSession = true;
-            app.store.addPersonalSession(app.store.state.currentUser, this.user);
+            app.store.state.isInPrivateSession = true;
+            app.store.addPrivateSession(app.store.state.currentUser, this.user);
 
         }
     },
@@ -254,7 +254,7 @@ Vue.component('chat-session', {
         return {
             messages :app.store.state.messages,
             currentMessage: '',
-            isInPersonalSession: app.store.state.isInPersonalSession
+            isInPrivateSession: app.store.state.isInPrivateSession
         };
     },
     methods: {
@@ -279,14 +279,14 @@ Vue.component('chat-session', {
     },
     computed: {
         isInChatSession: function () {
-            return !app.store.state.isInPersonalSession;
+            return !app.store.state.isInPrivateSession;
         }
     },
     watch: {
         messages: function (newMessages) {
         },
-        isInPersonalSession: function (foo) {
-            console.log('isInPersonalChanged');
+        isInPrivateSession: function (foo) {
+            console.log('isInPrivateSession');
         },
     },
     beforeUpdate() {
@@ -299,15 +299,15 @@ Vue.component('chat-session', {
 });
 
 
-Vue.component('personal-session', {
+Vue.component('private-session', {
     template: `
-    <section class="chat__session chat__session--personal" v-show="isInPersonalSession">
+    <section class="chat__session chat__session--private" v-show="isInPrivateSession">
         <header class="chat__session-header">        
-            <h1 class="personal-session__title">Gettin' personal!</h1>
+            <h1 class="private-session__title">Gettin' private!</h1>
             <button v-on:click="getGroup">Back to Group</button>
 
         </header>
-        <output class="chat__session-messages" v-if="personalSession.messages.length > 0">
+        <output class="chat__session-messages" v-if="privateSession.messages.length > 0">
         <chat-message v-for="(message,index) in messages"
         v-bind:message="message"
         v-bind:index="index"
@@ -325,19 +325,19 @@ Vue.component('personal-session', {
     `,
     data: function () {
         return {
-            personalSession: app.store.state.personalSession,
+            privateSession: app.store.state.privateSession,
             currentMessage: ''
 
         };
     },
     computed: {
-        isInPersonalSession() {
-            return app.store.state.isInPersonalSession;
+        isInPrivateSession() {
+            return app.store.state.isInPrivateSession;
         }
     },
     methods: {
         getGroup() {
-            app.store.state.isInPersonalSession = false;
+            app.store.state.isInPrivateSession = false;
         },
         readMessage(evt) {
             if (evt.which == 13) {
@@ -347,7 +347,7 @@ Vue.component('personal-session', {
         sendMessage() {
             const textMsg = this.currentMessage;
             const message = new Message(textMsg, app.store.state.currentUser, true);
-            const username = this.personalSession.target.username;
+            const username = this.privateSession.target.username;
             const privateSocket = io()
 
             this.currentMessage = '';
@@ -361,7 +361,7 @@ Vue.component('personal-session', {
 
     },
     updated() {
-        console.info(app.store.state.personalSession);
+        console.info(app.store.state.privateSession);
     }
 });
 

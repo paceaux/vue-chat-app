@@ -6,9 +6,9 @@ export default {
         messages: [],
         users:[],
         currentUser: localStorage.getItem('app-currentUser') && new User(JSON.parse(localStorage.getItem('app-currentUser'))) || new User(),
-        isInPersonalSession: false,
+        isInPrivateSession: false,
         videoStream: {},
-        personalSession: {
+        privateSession: {
             current: {},
             target: {},
             messages: []
@@ -78,29 +78,29 @@ export default {
 
         return typedUser;
     },
-    addPersonalSession(currentUser, targetUser) {
-        this.state.personalSession.current = currentUser;
-        this.state.personalSession.target = targetUser;
+    addPrivateSession(currentUser, targetUser) {
+        this.state.privateSession.current = currentUser;
+        this.state.privateSession.target = targetUser;
     },
-    removePersonalSession() {
-        this.state.personalSession.current = {};
-        this.state.personalSession.target ={};
+    removePrivateSession() {
+        this.state.privateSession.current = {};
+        this.state.privateSession.target ={};
     },
-    addPersonalMessage(message) {
-        if (this.debug) console.info('addPersonalMessage', message);
-        this.state.personalSession.messages.push(message);
+    addPrivateMessage(message) {
+        if (this.debug) console.info('addprivateMessage', message);
+        this.state.privateSession.messages.push(message);
     },
-    addPersonalMessages(newMessages) {
-        if (this.debug) console.info('addPersonalMessages', newMessages);
+    addPrivateMessages(newMessages) {
+        if (this.debug) console.info('addprivateMessages', newMessages);
 
-        const currentMessages = this.state.personalSession.messages;
+        const currentMessages = this.state.privateSession.messages;
 
         newMessages.forEach(newMsg=> {
             const existingMsg = currentMessages.find((currentEl) => {
                 return currentEl.timeCreated == newMsg.timeCreated;
             });
             if (!existingMsg) {
-                this.addPersonalMessage(newMsg);
+                this.addprivateMessage(newMsg);
             }
         });
     },
