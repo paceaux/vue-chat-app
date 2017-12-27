@@ -230,7 +230,7 @@ Vue.component('chat-message', {
 
 Vue.component('chat-session', {
     template: `
-        <section class="chat__session" v-show="isInChatSession">
+        <section class="chat__session chat__session--group" v-show="isInChatSession">
             <output class="chat__session-messages" v-if="messages.length > 0">
                 <chat-message v-for="(message,index) in messages"
                 v-bind:message="message"
@@ -301,19 +301,67 @@ Vue.component('chat-session', {
 
 Vue.component('personal-session', {
     template: `
-    <section class="personal-session" v-show="isInPersonalSession">
-        <h1 class="personal-session__title">Gettin' personal!</h1>
+    <section class="chat__session chat__session--personal" v-show="isInPersonalSession">
+        <header class="chat__session-header">        
+            <h1 class="personal-session__title">Gettin' personal!</h1>
+            <button v-on:click="getGroup">Back to Group</button>
+
+        </header>
+        <output class="chat__session-messages" v-if="personalSession.messages.length > 0">
+        <chat-message v-for="(message,index) in messages"
+        v-bind:message="message"
+        v-bind:index="index"
+        v-bind:key="message.timeCreated"
+        >
+        </chat-message>
+    </output>
+    <div class="chat__session-messageField">
+        <textarea class="chat__session-message" v-model="currentMessage" v-on:keyup="readMessage">
+
+        </textarea>
+
+        </div>
     </section>
     `,
     data: function () {
         return {
-            personalSession: app.store.state.personalSession
+            personalSession: app.store.state.personalSession,
+            currentMessage: ''
+
         };
     },
     computed: {
         isInPersonalSession() {
             return app.store.state.isInPersonalSession;
         }
+    },
+    methods: {
+        getGroup() {
+            app.store.state.isInPersonalSession = false;
+        },
+        readMessage(evt) {
+            if (evt.which == 13) {
+                this.sendMessage();
+            }
+        },
+        sendMessage() {
+            const textMsg = this.currentMessage;
+            const message = new Message(textMsg, app.store.state.currentUser, true);
+            const username = this.personalSession.target.username;
+            const privateSocket = io()
+
+            this.currentMessage = '';
+            this.scrollToLastMessage();
+        },
+        scrollToLastMessage() {
+            const sessionContainer = this.$el.querySelector('.chat__session-messages');
+
+            if (sessionContainer)  sessionContainer.scrollTop = sessionContainer.scrollHeight;
+        }
+
+    },
+    updated() {
+        console.info(app.store.state.personalSession);
     }
 });
 
