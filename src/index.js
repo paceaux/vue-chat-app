@@ -35,7 +35,7 @@ Vue.component('chat-user-item', {
     data: function () {
         return {
             isExpanded: false,
-            isInPersonalSession: app.store.isInPersonalSession
+            isInPersonalSession: app.store.state.isInPersonalSession
         };
     },
     computed: {
@@ -57,7 +57,6 @@ Vue.component('chat-user-item', {
             app.store.state.isInPersonalSession = true;
             app.store.addPersonalSession(app.store.state.currentUser, this.user);
 
-            console.log(app.store.state);
         }
     },
     beforeMount() {
@@ -231,7 +230,7 @@ Vue.component('chat-message', {
 
 Vue.component('chat-session', {
     template: `
-        <section class="chat__session" v-if="!isInPersonalSession">
+        <section class="chat__session" v-show="isInChatSession">
             <output class="chat__session-messages" v-if="messages.length > 0">
                 <chat-message v-for="(message,index) in messages"
                 v-bind:message="message"
@@ -278,20 +277,49 @@ Vue.component('chat-session', {
             if (sessionContainer)  sessionContainer.scrollTop = sessionContainer.scrollHeight;
         }
     },
-    watch: {
-        messages: function (newMessages) {
+    computed: {
+        isInChatSession: function () {
+            return !app.store.state.isInPersonalSession;
         }
     },
-
+    watch: {
+        messages: function (newMessages) {
+        },
+        isInPersonalSession: function (foo) {
+            console.log('isInPersonalChanged');
+        },
+    },
+    beforeUpdate() {
+    },
     updated() {
         if (this.messages.length > 0) this.scrollToLastMessage();
+
     }
 
 });
 
 
+Vue.component('personal-session', {
+    template: `
+    <section class="personal-session" v-show="isInPersonalSession">
+        <h1 class="personal-session__title">Gettin' personal!</h1>
+    </section>
+    `,
+    data: function () {
+        return {
+            personalSession: app.store.state.personalSession
+        };
+    },
+    computed: {
+        isInPersonalSession() {
+            return app.store.state.isInPersonalSession;
+        }
+    }
+});
+
 const chatApp = new Vue({
-    el: '.chat'
+    el: '.chat',
+    data: app.store.state
 });
 
 app.socketCallbacks = {
