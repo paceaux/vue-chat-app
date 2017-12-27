@@ -1,6 +1,15 @@
 :root {
-    --mainBG: hsla(190, 60%, 67%, 0.788);
-    --frameBorderColor: hsla(190,60%,17%, 1);
+    --bSat: 60%;
+    --bLight: 67%;
+    --pltCooler: hsl(110, var(--bSat), var(--bLight));
+    --pltCoolerDarker: hsl(110, var(--bSat), 37%);
+    --pltCoolerDarkest: hsl(110, var(--bSat), 17%);
+    --pltCoolest: hsl(190,var(--bSat), var(--bLight));
+    --pltCoolestDarker: hsl(190,var(--bSat), 37%); 
+    --pltCoolestDarkest: hsl(190,var(--bSat), 17%);
+    --mainBG: hsla(190, var(--bSat), var(--bLight), 0.788);
+    --proceedColor: var(--pltCooler);
+    --frameBorderColor: var(--pltCoolestDarkest);
     --frameBorder: 4px solid var(--frameBorderColor);
     --cardBG: rgba(255,255,255,.7);
     --anim8Duration: .35s;
