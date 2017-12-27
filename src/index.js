@@ -301,11 +301,12 @@ Vue.component('chat-session', {
 
 Vue.component('private-session', {
     template: `
-    <section class="chat__session chat__session--private chat-session" v-if="isInPrivateSession">
+    <section class="chat__session chat-session--private chat-session" v-if="isInPrivateSession">
         <header class="chat-session__header">
+        <button class="chat-session__close" v-on:click="getGroup">&larr; Back to Group</button>
+
             <h1 class="chat-session__title">Private Session with {{privateUser.username}}</h1>
             <img class="chat-session__user-img" v-if="privateUser.photo" v-bind:src="privateUser.photo" />        
-            <button class="chat-session__close" v-on:click="getGroup">Back to Group</button>
 
         </header>
         <output class="chat-session__messages" v-if="privateSession.messages.length > 0">
@@ -316,8 +317,8 @@ Vue.component('private-session', {
         >
         </chat-message>
     </output>
-    <div class="chat__session-messageField">
-        <textarea class="chat__session-message" v-model="currentMessage" v-on:keyup="readMessage">
+    <div class="chat-session__messageField">
+        <textarea class="chat-session__message" v-model="currentMessage" v-on:keyup="readMessage">
 
         </textarea>
 
