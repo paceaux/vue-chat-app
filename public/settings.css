@@ -1,15 +1,18 @@
 :root {
     --bSat: 60%;
     --bLight: 67%;
-    --pltCooler: hsl(110, var(--bSat), var(--bLight));
-    --pltCoolerDarker: hsl(110, var(--bSat), 37%);
-    --pltCoolerDarkest: hsl(110, var(--bSat), 17%);
-    --pltCoolest: hsl(190,var(--bSat), var(--bLight));
-    --pltCoolestDarker: hsl(190,var(--bSat), 37%); 
-    --pltCoolestDarkest: hsl(190,var(--bSat), 17%);
+    --pltWarm: hsl(55, var(--bSat), var(--bLight));
+    --pltWarmer: hsl(27, var(--bSat), var(--bLight));
+    --pltWarmest: hsl(14, var(--bSat), var(--bLight));
+    --pltCool: hsl(110, var(--bSat), var(--bLight));
+    --pltCoolDarker: hsl(110, var(--bSat), 37%);
+    --pltCoolDarkest: hsl(110, var(--bSat), 17%);
+    --pltCooler: hsl(190,var(--bSat), var(--bLight));
+    --pltCoolerDarker: hsl(190,var(--bSat), 37%); 
+    --pltCoolerDarkest: hsl(190,var(--bSat), 17%);
     --mainBG: hsla(190, var(--bSat), var(--bLight), 0.788);
-    --proceedColor: var(--pltCooler);
-    --frameBorderColor: var(--pltCoolestDarkest);
+    --proceedColor: var(--pltCool);
+    --frameBorderColor: var(--pltCoolerDarkest);
     --frameBorder: 4px solid var(--frameBorderColor);
     --cardBG: rgba(255,255,255,.7);
     --anim8Duration: .35s;
