@@ -301,10 +301,11 @@ Vue.component('chat-session', {
 
 Vue.component('private-session', {
     template: `
-    <section class="chat__session chat__session--private" v-show="isInPrivateSession">
-        <header class="chat__session-header">        
-            <h1 class="private-session__title">Gettin' private!</h1>
-            <button v-on:click="getGroup">Back to Group</button>
+    <section class="chat__session chat__session--private private-session" v-if="isInPrivateSession">
+        <header class="chat__session-header">
+            <h1 class="private-session__title">Private Session with {{privateUser.username}}</h1>
+            <img class="private-session__user-img" v-if="privateUser.photo" v-bind:src="privateUser.photo" />        
+            <button class="private-session__close" v-on:click="getGroup">Back to Group</button>
 
         </header>
         <output class="chat__session-messages" v-if="privateSession.messages.length > 0">
@@ -333,6 +334,9 @@ Vue.component('private-session', {
     computed: {
         isInPrivateSession() {
             return app.store.state.isInPrivateSession;
+        },
+        privateUser () {
+            return app.store.state.privateSession.target;
         }
     },
     methods: {
@@ -348,7 +352,6 @@ Vue.component('private-session', {
             const textMsg = this.currentMessage;
             const message = new Message(textMsg, app.store.state.currentUser, true);
             const username = this.privateSession.target.username;
-            const privateSocket = io()
 
             this.currentMessage = '';
             this.scrollToLastMessage();
