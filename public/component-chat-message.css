@@ -25,7 +25,7 @@
 
 .chatMessage{
     animation-name: fadeIn;
-    animation-duration: .6s;
+    animation-duration: var(--anim8Duration);
     animation-iteration-count: 1;
-    animation-timing-function: ease-in;
+    animation-timing-function: var(--anim8Timing);
 }
