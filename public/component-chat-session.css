@@ -56,7 +56,6 @@
     grid-row-start:2;
     grid-row-end: 3;
     display: flex;
-    background-color: var(--mainBG);
 }
 
 .chat-session__messageSend {

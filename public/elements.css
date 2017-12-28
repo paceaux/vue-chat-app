@@ -409,6 +409,12 @@ html {
    #6ea5c1
   */
   
+:hover,
+:focus,
+:active {
+  transition: all .3s ease-in;
+}
+
   a {
     color: #6ea5dc;
     text-decoration: none;
@@ -426,6 +432,43 @@ html {
   a:active {
     border-style: solid;
   }
+
+  input,
+  textarea,
+  select,
+  button {
+    padding: .618em;
+    border-width: 1px;
+    border-color: hsl(60, 15%, 79%);
+    transition: all .3s ease-in-out;
+  }
+
+  input,
+  textarea {
+    background-color: hsla(60,100%, 99%, .9);
+  }
+
+  input:hover, 
+  textarea:hover, 
+  select:hover, 
+  button:hover {
+    border-color: hsla(60, 15%, 59%, .9);
+  }
+
+  input:focus, input:active,
+  textarea:focus, textarea:active,
+  select:focus, select:active,
+  button:focus, button:active  {
+    outline: none;
+    border-color: hsla(60, 15%, 39%, .9);
+  }
+
+
+  button {
+    border-radius: 2px;
+  }
+
+
   
   /*==========
   #Table
@@ -486,19 +529,5 @@ html {
   tfoot tr:first-child th,
   thead tr:last-child td {
     border-top-width: 2px;
-  }
-
-  button {
-    padding: 0 .618em;
-    border: 1px solid #333;
-    border-radius: 2px;
-    transition: all .3s ease-in-out;
-  }
-
-  button:hover,
-  button:focus,
-  button:active {
-    outline: none;
-    border-color: #999;
   }
 
